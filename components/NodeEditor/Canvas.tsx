@@ -9,7 +9,7 @@ export const Canvas = () => {
   return (
     <Container width="100vw" height="100vh">
       {nodes.map(props => (
-        <Node {...props} />
+        <Node key={props.id} {...props} />
       ))}
     </Container>
   )

@@ -9,6 +9,7 @@ export const NodeEditor = ({ initialNodes }) => {
       initialNodes={initialNodes.map(props => {
         runningY += 60
         return {
+          id: Math.random()+'',
           x: 20,
           y: runningY,
           type: 'number',

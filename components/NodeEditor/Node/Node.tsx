@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion'
 
 export interface INode {
-  type: 'number'
+  id: string
+  type: 'number' | 'add'
   x: number
   y: number
   inputs: any[]
