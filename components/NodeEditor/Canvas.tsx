@@ -23,7 +23,17 @@ export const Canvas = () => {
 }
 
 const Container = styled(motion.svg)`
-  background: gray;
-  width: 100vw;
-  height: 100vh;
+  --highlight: orange;
+  display: block;
+  background: #353535;
+  width: 100%;
+  min-height: 300px;
+  text {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+      'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 10px;
+    fill: white;
+    text-align: center;
+    user-select: none;
+  }
 `
