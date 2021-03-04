@@ -1,8 +1,16 @@
+import { motion } from 'framer-motion'
+import styled from 'styled-components'
+
 export const Canvas = ({ children }) => {
   return (
-    <div>
-      <h2>Hello from canvas</h2>
+    <Container width="100vw" height="100vh">
       {children}
-    </div>
+    </Container>
   )
 }
+
+const Container = styled(motion.svg)`
+  background: yellow;
+  width: 100vw;
+  height: 100vh;
+`
