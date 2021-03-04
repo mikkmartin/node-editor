@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { useStore } from './EditorProvider'
 import { Node } from './Node'
 import { Debugger } from './Debugger'
+import { FilterDefs } from './FilterDefs'
 
 export const Canvas = () => {
   const { nodes, handlePan, handlePanEnd, handlePanStart } = useStore()
@@ -18,6 +19,7 @@ export const Canvas = () => {
         <Node key={props.id} {...props} />
       ))}
       <Debugger />
+      <FilterDefs/>
     </Container>
   )
 }

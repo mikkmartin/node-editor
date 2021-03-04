@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Observer } from 'mobx-react'
 import { useStore } from '../EditorProvider'
+import { Label } from './Label'
 import styled from 'styled-components'
 
 export interface INode {
@@ -8,16 +9,14 @@ export interface INode {
   type: 'number' | 'add'
   x: number
   y: number
+  width: number
+  height: number
   inputs: any[]
   selected?: boolean
 }
 
 export const Node = ({ id, type, x, y, inputs }: INode) => {
   const { drag, toggle, nodes } = useStore()
-
-  const handleTap = () => {
-    toggle(id)
-  }
 
   return (
     <Observer
@@ -26,15 +25,28 @@ export const Node = ({ id, type, x, y, inputs }: INode) => {
         const { selected } = node
         return (
           <Container
-            onTap={handleTap}
+            onTap={() => toggle(id)}
             style={{ x: selected ? x + drag.x : x, y: selected ? y + drag.y : y }}>
-            <rect width="100" height="50" style={{ fill: selected ? 'orange' : 'white' }} />
-            <text x="5" y="15">{type}</text>
+            <Background {...node} />
+            <Label {...node} />
           </Container>
         )
       }}></Observer>
   )
 }
 
+const Background = ({ selected = false, width, height }) => {
+  return (
+    <rect
+      filter="url(#shadow)"
+      width={width}
+      height={height}
+      stroke={selected ? 'var(--highlight)' : 'none'}
+      rx={8}
+    />
+  )
+}
+
 const Container = styled(motion.g)`
+  fill: #4c4c4c;
 `
