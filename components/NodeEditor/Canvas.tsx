@@ -7,13 +7,14 @@ import { FilterDefs } from './FilterDefs'
 import { Selector } from './Selector'
 
 export const Canvas = () => {
-  const { nodes, handlePan, handlePanEnd, handlePanStart } = useStore()
+  const { nodes, handlePan, handlePanEnd, handlePanStart, handleTap } = useStore()
 
   return (
     <Container
       onPanStart={handlePanStart}
       onPan={handlePan}
       onPanEnd={handlePanEnd}
+      onTap={handleTap}
       width="100vw"
       height="100vh">
       {nodes.map(props => (

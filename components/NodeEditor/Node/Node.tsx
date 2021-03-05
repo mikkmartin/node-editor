@@ -11,12 +11,26 @@ export interface INode {
   y: number
   width: number
   height: number
+  outputs: any[]
   inputs: any[]
   selected?: boolean
 }
 
 export const Node = ({ id, type, x, y, inputs }: INode) => {
-  const { drag, toggle, nodes } = useStore()
+  const { drag, select, deselect, deselectAll, nodes, handlePan, handlePanEnd } = useStore()
+
+  const handleTapStart = (ev, id, selected) => {
+    ev.stopPropagation()
+    const isShiftOrCommand = ev.metaKey || ev.shiftKey
+    if (!selected && !isShiftOrCommand) {
+      deselectAll()
+      select(id)
+    }
+    if (isShiftOrCommand) {
+      if (selected) deselect(id)
+      else select(id)
+    }
+  }
 
   return (
     <Observer
@@ -25,7 +39,9 @@ export const Node = ({ id, type, x, y, inputs }: INode) => {
         const { selected } = node
         return (
           <Container
-            onTap={() => toggle(id)}
+            onTapStart={ev => handleTapStart(ev, id, selected)}
+            onPan={handlePan}
+            onPanEnd={handlePanEnd}
             style={{ x: selected ? x + drag.x : x, y: selected ? y + drag.y : y }}>
             <Background {...node} />
             <Label {...node} />

@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react'
 import { useLocalObservable } from 'mobx-react'
 import { NodeType } from './Node'
-import { PanInfo } from 'framer-motion'
+import { PanInfo, TapInfo } from 'framer-motion'
 import { Box2D, getBox } from './Selector'
 
 interface IStore {
@@ -12,10 +12,13 @@ interface IStore {
     dragging: boolean
     box: null | Box2D
   }
+  handleTap: (ev, info: TapInfo) => void
   handlePanStart: (ev, info: PanInfo) => void
   handlePan: (ev, info: PanInfo) => void
   handlePanEnd: (ev, info: PanInfo) => void
-  toggle: (id: string) => void
+  select: (id: string) => void
+  deselect: (id: string) => void
+  deselectAll: () => void
   setBox: (box: null | Box2D) => void
 }
 
@@ -31,6 +34,11 @@ export const EditorProvider = ({ children, initialNodes }) => {
         y: 0,
         dragging: false,
         box: null,
+      },
+      handleTap(ev) {
+        ev.preventDefault()
+        ev.stopPropagation()
+        if (!store.drag.dragging) store.deselectAll()
       },
       handlePanStart(_, info) {
         store.drag.dragging = true
@@ -48,10 +56,22 @@ export const EditorProvider = ({ children, initialNodes }) => {
         store.drag.y = 0
         store.drag.box = null
       },
-      toggle(id) {
-        store.nodes.find((n, i) => {
-          if (n.id === id) n.selected = !n.selected
+      select(id) {
+        store.nodes.find(n => {
+          if (n.id === id) n.selected = true
           return n.id === id
+        })
+      },
+      deselect(id) {
+        store.nodes.find(n => {
+          if (n.id === id) n.selected = false
+          return n.id === id
+        })
+      },
+      deselectAll() {
+        console.log('deselectAll()')
+        store.nodes.forEach(n => {
+          n.selected = false
         })
       },
       setBox(box: null | Box2D) {
