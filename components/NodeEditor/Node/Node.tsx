@@ -41,7 +41,7 @@ export const Node = ({ id, type, inputs }: INode) => {
         return (
           <Container
             onTapStart={ev => handleTapStart(ev, id, selected)}
-            onPan={handlePan}
+            onPan={(ev, info) => handlePan(ev, info, true)}
             onPanEnd={handlePanEnd}
             style={{ x, y }}>
             <Background {...node} />

@@ -14,7 +14,7 @@ interface IStore {
   }
   handleTap: (ev, info: TapInfo) => void
   handlePanStart: (ev, info: PanInfo) => void
-  handlePan: (ev, info: PanInfo) => void
+  handlePan: (ev, info: PanInfo, isNode?: boolean) => void
   handlePanEnd: (ev, info: PanInfo) => void
   select: (id: string) => void
   deselect: (id: string) => void
@@ -41,15 +41,16 @@ export const EditorProvider = ({ children, initialNodes }) => {
         ev.stopPropagation()
         if (!store.drag.dragging) store.deselectAll()
       },
-      handlePanStart(_, info) {
+      handlePanStart(ev, info) {
+        if (!ev.shiftKey) store.deselectAll()
         store.drag.dragging = true
         store.drag.x = info.offset.x
         store.drag.y = info.offset.y
       },
-      handlePan(ev, info) {
+      handlePan(ev, info, isNode) {
         store.drag.x = info.offset.x
         store.drag.y = info.offset.y
-        store.drag.box = getBox(ev, info, store.drag.box)
+        if (!isNode) store.drag.box = getBox(ev, info, store.drag.box)
       },
       handlePanEnd() {
         store.updatePositions()
