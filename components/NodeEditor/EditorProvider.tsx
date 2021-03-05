@@ -69,7 +69,6 @@ export const EditorProvider = ({ children, initialNodes }) => {
         })
       },
       deselectAll() {
-        console.log('deselectAll()')
         store.nodes.forEach(n => {
           n.selected = false
         })
