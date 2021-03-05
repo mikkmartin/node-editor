@@ -16,7 +16,7 @@ export interface INode {
   selected?: boolean
 }
 
-export const Node = ({ id, type, x, y, inputs }: INode) => {
+export const Node = ({ id, type, inputs }: INode) => {
   const { drag, select, deselect, deselectAll, nodes, handlePan, handlePanEnd } = useStore()
 
   const handleTapStart = (ev, id, selected) => {
@@ -31,18 +31,19 @@ export const Node = ({ id, type, x, y, inputs }: INode) => {
       else select(id)
     }
   }
-
   return (
     <Observer
       render={() => {
         const node = nodes.find(n => n.id === id) as INode
         const { selected } = node
+        const x = selected ? node.x + drag.x : node.x
+        const y = selected ? node.y + drag.y : node.y
         return (
           <Container
             onTapStart={ev => handleTapStart(ev, id, selected)}
             onPan={handlePan}
             onPanEnd={handlePanEnd}
-            style={{ x: selected ? x + drag.x : x, y: selected ? y + drag.y : y }}>
+            style={{ x, y }}>
             <Background {...node} />
             <Label {...node} />
           </Container>

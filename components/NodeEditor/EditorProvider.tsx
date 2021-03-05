@@ -18,6 +18,7 @@ interface IStore {
   handlePanEnd: (ev, info: PanInfo) => void
   select: (id: string) => void
   deselect: (id: string) => void
+  updatePositions: () => void
   deselectAll: () => void
   setBox: (box: null | Box2D) => void
 }
@@ -51,6 +52,7 @@ export const EditorProvider = ({ children, initialNodes }) => {
         store.drag.box = getBox(ev, info, store.drag.box)
       },
       handlePanEnd() {
+        store.updatePositions()
         store.drag.dragging = false
         store.drag.x = 0
         store.drag.y = 0
@@ -60,6 +62,14 @@ export const EditorProvider = ({ children, initialNodes }) => {
         store.nodes.find(n => {
           if (n.id === id) n.selected = true
           return n.id === id
+        })
+      },
+      updatePositions() {
+        store.nodes.forEach(n => {
+          if (n.selected) {
+            n.x = n.x + store.drag.x
+            n.y = n.y + store.drag.y
+          }
         })
       },
       deselect(id) {
