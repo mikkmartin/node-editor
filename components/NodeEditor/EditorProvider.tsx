@@ -9,13 +9,15 @@ interface IStore {
   drag: {
     x: number
     y: number
+    panning: boolean
     dragging: boolean
     box: null | Box2D
   }
-  handleTap: (ev, info: TapInfo) => void
   handlePanStart: (ev, info: PanInfo) => void
   handlePan: (ev, info: PanInfo, isNode?: boolean) => void
   handlePanEnd: (ev, info: PanInfo) => void
+  handleTap: (ev, info: TapInfo) => void
+  handleTapCancel: (ev, info: TapInfo) => void
   select: (id: string) => void
   deselect: (id: string) => void
   updatePositions: () => void
@@ -34,15 +36,12 @@ export const EditorProvider = ({ children, initialNodes }) => {
         x: 0,
         y: 0,
         dragging: false,
+        panning: false,
         box: null,
-      },
-      handleTap(ev) {
-        ev.preventDefault()
-        ev.stopPropagation()
-        if (!store.drag.dragging) store.deselectAll()
       },
       handlePanStart(ev, info) {
         if (!ev.shiftKey) store.deselectAll()
+        store.drag.panning = true
         store.drag.dragging = true
         store.drag.x = info.offset.x
         store.drag.y = info.offset.y
@@ -50,14 +49,30 @@ export const EditorProvider = ({ children, initialNodes }) => {
       handlePan(ev, info, isNode) {
         store.drag.x = info.offset.x
         store.drag.y = info.offset.y
-        if (!isNode) store.drag.box = getBox(ev, info, store.drag.box)
+        if (!isNode) {
+          store.drag.box = getBox(ev, info, store.drag.box)
+          if (store.drag.box !== null) {
+            const intersectingNodes = store.nodes.filter(node =>
+              isIntersecting(store.drag.box as Box2D, node)
+            )
+            if (Boolean(intersectingNodes)) intersectingNodes.forEach(n => (n.selected = true))
+            else store.deselectAll()
+          }
+        }
       },
       handlePanEnd() {
-        store.updatePositions()
+        if (!store.drag.box) store.updatePositions()
         store.drag.dragging = false
         store.drag.x = 0
         store.drag.y = 0
         store.drag.box = null
+      },
+      handleTap() {
+        if (!store.drag.panning) store.deselectAll()
+        store.drag.panning = false
+      },
+      handleTapCancel() {
+        store.drag.panning = false
       },
       select(id) {
         store.nodes.find(n => {
@@ -89,7 +104,14 @@ export const EditorProvider = ({ children, initialNodes }) => {
       },
     })
   )
+
   return <Context.Provider value={store}>{children}</Context.Provider>
 }
 
 export const useStore = () => useContext(Context)
+
+const isIntersecting = (a: Box2D, b: Box2D) => {
+  if (a.x >= b.x + b.width || b.x >= a.x + a.width) return false
+  if (a.y >= b.y + b.height || b.y >= a.y + a.height) return false
+  return true
+}

@@ -36,8 +36,11 @@ export const Node = ({ id, type, inputs }: INode) => {
       render={() => {
         const node = nodes.find(n => n.id === id) as INode
         const { selected } = node
-        const x = selected ? node.x + drag.x : node.x
-        const y = selected ? node.y + drag.y : node.y
+        let { x, y } = node
+        if (selected && !drag.box) {
+          x += drag.x
+          y += drag.y
+        }
         return (
           <Container
             onTapStart={ev => handleTapStart(ev, id, selected)}
