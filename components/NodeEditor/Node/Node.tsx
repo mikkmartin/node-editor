@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { Observer } from 'mobx-react'
 import { useStore } from '../EditorProvider'
 import { Label } from './Label'
+import Sockets from './Sockets'
 import styled from 'styled-components'
 
 export interface INode {
@@ -49,6 +50,7 @@ export const Node = ({ id, type, inputs }: INode) => {
             style={{ x, y }}>
             <Background {...node} />
             <Label {...node} />
+            <Sockets {...node} />
           </Container>
         )
       }}></Observer>

@@ -10,7 +10,6 @@ export interface NodeProps {
   x?: number
   y?: number
   inputs?: any[]
-  outputs?: any[]
 }
 export interface Node extends NodeProps {
   id: string
@@ -24,8 +23,8 @@ export interface Node extends NodeProps {
 
 let runningY = 20
 export const getNodeProps = (initialProps: NodeProps): Node => {
-  const { type, inputs, outputs } = initialProps
-  const sockets = getInputs(type, inputs, outputs)
+  const { type, inputs } = initialProps
+  const sockets = getInputs(type, inputs)
   const height = calcNodeHeight(sockets)
   const x = initialProps.x || 20
   const defaults = { x, y: runningY, height, ...sockets }
@@ -67,12 +66,12 @@ interface Sockets {
   inputs: Socket[]
   outputs: Socket[]
 }
-const getInputs = (type: NodeType, initialInputs?: any[], initialOutputs?: any[]): Sockets => {
+const getInputs = (type: NodeType, initialInputs?: any[]): Sockets => {
   switch (type) {
     case 'add':
       return {
-        inputs: mapInputs(initialInputs, [0]),
-        outputs: mapInputs(initialOutputs, [0, 0]),
+        inputs: mapInputs([0, 0], initialInputs),
+        outputs: mapInputs([0]),
       }
     default:
       return {
@@ -82,10 +81,10 @@ const getInputs = (type: NodeType, initialInputs?: any[], initialOutputs?: any[]
   }
 }
 
-const mapInputs = (initialValues, defaults) =>
+const mapInputs = (defaults, initialValues?: any[]) =>
   defaults.map((defaultValue, i) => ({
     id: nanoid(),
-    value: initialValues?.length > i ? initialValues[i] : defaultValue,
+    value: initialValues && initialValues?.length > i ? initialValues[i] : defaultValue,
   }))
 
 const calcNodeHeight = ({ inputs, outputs }: Sockets): number => {
