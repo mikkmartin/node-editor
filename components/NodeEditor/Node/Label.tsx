@@ -1,6 +1,8 @@
+import { memo } from 'react'
+import { INode } from './Node'
 import styled from 'styled-components'
 
-export const Label = ({ id, width, type }) => {
+export const Label = memo<INode>(({ id, width, type }) => {
   return (
     <>
       <defs>
@@ -19,7 +21,7 @@ export const Label = ({ id, width, type }) => {
       </Text>
     </>
   )
-}
+})
 
 const Text = styled.text`
   font-weight: bold;
