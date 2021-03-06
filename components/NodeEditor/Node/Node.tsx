@@ -4,20 +4,14 @@ import { useStore } from '../EditorProvider'
 import { Label } from './Label'
 import Sockets from './Sockets'
 import styled from 'styled-components'
+import { Node as PureNode } from './nodeTypes'
+export type { NodeType } from './nodeTypes'
 
-export interface INode {
-  id: string
-  type: 'number' | 'add'
-  x: number
-  y: number
-  width: number
-  height: number
-  outputs: any[]
-  inputs: any[]
-  selected?: boolean
+export interface INode extends PureNode {
+  selected: boolean
 }
 
-export const Node = ({ id, type, inputs }: INode) => {
+export const Node = ({ id }: INode) => {
   const { drag, select, deselect, deselectAll, nodes, handlePan, handlePanEnd } = useStore()
 
   const handleTapStart = (ev, id, selected) => {

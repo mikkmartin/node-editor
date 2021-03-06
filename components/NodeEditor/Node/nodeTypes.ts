@@ -1,10 +1,8 @@
 import { nanoid } from 'nanoid'
+import { ISocket } from './Sockets'
 
 export type NodeType = 'number' | 'add' | 'substract' | 'multiply' | 'divide'
-interface Socket {
-  id: string
-  value: number | string
-}
+
 export interface NodeProps {
   type: NodeType
   x?: number
@@ -17,8 +15,8 @@ export interface Node extends NodeProps {
   y: number
   width: number
   height: number
-  inputs: Socket[]
-  outputs: Socket[]
+  inputs: ISocket[]
+  outputs: ISocket[]
 }
 
 let runningY = 20
@@ -40,7 +38,7 @@ export const getNodeProps = (initialProps: NodeProps): Node => {
     default:
       node = { ...numberNode(initialProps), ...defaults }
   }
-  runningY += height
+  runningY += height + 2
   return node
 }
 
@@ -49,7 +47,7 @@ const addNode = props => {
     ...props,
     id: nanoid(),
     x: 20,
-    width: 100,
+    width: 89,
   }
 }
 
@@ -58,19 +56,19 @@ const numberNode = props => {
     ...props,
     id: nanoid(),
     x: 20,
-    width: 75,
+    width: 68,
   }
 }
 
 interface Sockets {
-  inputs: Socket[]
-  outputs: Socket[]
+  inputs: ISocket[]
+  outputs: ISocket[]
 }
 const getInputs = (type: NodeType, initialInputs?: any[]): Sockets => {
   switch (type) {
     case 'add':
       return {
-        inputs: mapInputs([0, 0], initialInputs),
+        inputs: mapInputs([0, 0, 0], initialInputs),
         outputs: mapInputs([0]),
       }
     default:
@@ -88,5 +86,5 @@ const mapInputs = (defaults, initialValues?: any[]) =>
   }))
 
 const calcNodeHeight = ({ inputs, outputs }: Sockets): number => {
-  return 25 + Math.max(inputs.length, outputs.length) * 15
+  return 26 + Math.max(inputs.length, outputs.length) * 14
 }
