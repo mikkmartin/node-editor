@@ -5,6 +5,8 @@ import { Label } from './Label'
 import Sockets from './Sockets'
 import styled from 'styled-components'
 import { Node as PureNode } from './nodeTypes'
+import { EditorProvider } from './NodeProvider'
+import { Background } from './Background'
 export type { NodeType } from './nodeTypes'
 
 export interface INode extends PureNode {
@@ -36,29 +38,19 @@ export const Node = ({ id }: INode) => {
           y += drag.y
         }
         return (
-          <Container
-            onTapStart={ev => handleTapStart(ev, id, selected)}
-            onPan={(ev, info) => handlePan(ev, info, true)}
-            onPanEnd={handlePanEnd}
-            style={{ x, y }}>
-            <Background {...node} />
-            <Label {...node} />
-            <Sockets {...node} />
-          </Container>
+          <EditorProvider node={node}>
+            <Container
+              onTapStart={ev => handleTapStart(ev, id, selected)}
+              onPan={(ev, info) => handlePan(ev, info, true)}
+              onPanEnd={handlePanEnd}
+              style={{ x, y }}>
+              <Background />
+              <Label {...node} />
+              <Sockets {...node} />
+            </Container>
+          </EditorProvider>
         )
       }}></Observer>
-  )
-}
-
-const Background = ({ selected = false, width, height }) => {
-  return (
-    <rect
-      filter="url(#shadow)"
-      width={width}
-      height={height}
-      stroke={selected ? 'var(--highlight)' : 'none'}
-      rx={8}
-    />
   )
 }
 
