@@ -1,8 +1,9 @@
 import { memo } from 'react'
-import { INode } from './Node'
 import styled from 'styled-components'
+import { useNode } from './NodeProvider'
 
-export const Label = memo<INode>(({ id, width, type }) => {
+export const Label = memo(() => {
+  const { id, width, type } = useNode()
   return (
     <>
       <defs>

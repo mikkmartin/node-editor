@@ -45,8 +45,8 @@ export const Node = ({ id }: INode) => {
               onPanEnd={handlePanEnd}
               style={{ x, y }}>
               <Background />
-              <Label {...node} />
-              <Sockets {...node} />
+              <Label />
+              <Sockets />
             </Container>
           </EditorProvider>
         )

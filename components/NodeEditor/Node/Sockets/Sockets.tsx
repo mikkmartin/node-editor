@@ -1,12 +1,14 @@
 import { Socket } from './Socket'
-import { INode, NodeType } from '../Node'
+import { NodeType } from '../Node'
+import { useNode } from '../NodeProvider'
 
 export interface ISocket {
   id: string
   value: number | string
 }
 
-export const Sockets = ({ inputs, outputs, width, type }: INode) => {
+export const Sockets = () => {
+  const { inputs, outputs, width, type } = useNode()
   return (
     <>
       {compute(inputs, outputs, type).map((output, i) => (
