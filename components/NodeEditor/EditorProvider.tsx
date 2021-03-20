@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react'
 import { useLocalObservable } from 'mobx-react-lite'
+import { observable } from 'mobx'
 import { NodeType } from './Node'
 import { PanInfo, TapInfo } from 'framer-motion'
 import { Box2D, getBox } from './Selector'
@@ -15,7 +16,6 @@ interface IStore {
     box: null | Box2D
   }
   getNode: (id: string) => NodeType
-  setNode: (changedNode: NodeType) => void
   setInput: SetInput
   handlePanStart: (ev, info: PanInfo) => void
   handlePan: (ev, info: PanInfo, isNode?: boolean) => void
@@ -35,7 +35,7 @@ const Context = createContext<IStore>()
 export const EditorProvider = ({ children, initialNodes }) => {
   const store = useLocalObservable(
     (): IStore => ({
-      nodes: initialNodes,
+      nodes: observable.array(initialNodes, { deep: true }),
       drag: {
         x: 0,
         y: 0,
@@ -48,26 +48,10 @@ export const EditorProvider = ({ children, initialNodes }) => {
         if (node) return node
         else throw new Error('Node not found.')
       },
-      setNode(changedNode: NodeType) {
-        const existingNode = store.nodes.find(n => n.id === changedNode.id)
-        if (existingNode) {
-          const index = store.nodes.indexOf(existingNode)
-          store.nodes[index] = changedNode
-        }
-        //store.nodes.map(node => (node.id === changedNode.id ? changedNode : node))
-      },
       setInput({ nodeId, socketId, value }) {
-        console.log('setInput()')
-        store.nodes = store.nodes.map(node =>
-          node.id === nodeId
-            ? {
-                ...node,
-                inputs: node.inputs.map(input =>
-                  input.id === socketId ? { ...input, value } : input
-                ),
-              }
-            : node
-        )
+        const node = store.nodes.find(node => node.id === nodeId)
+        const socket = node?.inputs.find(input => input.id === socketId)
+        if (socket) socket.value = value
       },
       handlePanStart(ev, info) {
         if (!ev.shiftKey) store.deselectAll()

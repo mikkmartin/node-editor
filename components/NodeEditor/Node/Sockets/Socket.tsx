@@ -23,7 +23,8 @@ export const Socket = ({ nth, type, width, nodeType, id }: SocketProps) => {
   const inputX = isInput ? 14 : -30
 
   const handleChange = ev => {
-    node.setInput({ socketId: id, value: parseInt(ev.target.value) })
+    if (!ev.target.value) return
+    node.setInput({ id, value: parseInt(ev.target.value) })
   }
 
   return (

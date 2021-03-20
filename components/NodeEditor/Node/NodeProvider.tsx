@@ -3,26 +3,22 @@ import { useStore } from '../EditorProvider'
 import { INode } from './Node'
 
 interface Props extends INode {
-  setInput: (action: { socketId: string; value: any }) => void
+  setInput: (action: {id: string, value: any}) => void
 }
 
 //@ts-ignore
 const Context = createContext<Props>()
 
 export const NodeProvider: FC<{ id: string }> = ({ children, id }) => {
-  const { nodes, setNode, setInput } = useStore()
-  const node = nodes.find(node => node.id === id)
+  const { getNode, setInput } = useStore()
+  const node = getNode(id)
   if (!node) throw new Error('Node not found.')
 
   return (
     <Context.Provider
       value={{
         ...node,
-        setInput: ({ socketId, value }) =>
-          setNode({
-            ...node,
-            inputs: node.inputs.map(input => (input.id === socketId ? { ...input, value } : input)),
-          }),
+        setInput: ({id, value}) => setInput({nodeId: node.id, socketId: id, value}),
       }}>
       {children}
     </Context.Provider>
