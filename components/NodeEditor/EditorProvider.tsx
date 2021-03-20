@@ -61,8 +61,7 @@ export const EditorProvider = ({ children, initialNodes }) => {
             const intersectingNodes = store.nodes.filter(node =>
               isIntersecting(store.drag.box as Box2D, node)
             )
-            if (Boolean(intersectingNodes)) intersectingNodes.forEach(n => (n.selected = true))
-            else store.deselectAll()
+            store.nodes.map(n => (n.selected = intersectingNodes.includes(n)))
           }
         }
       },
