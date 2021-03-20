@@ -14,6 +14,7 @@ export const Sockets = () => {
       {compute(inputs, outputs, type).map((output, i) => (
         <Socket
           key={output.id}
+          id={output.id}
           type="output"
           nodeType={type}
           nth={i}
@@ -24,6 +25,7 @@ export const Sockets = () => {
       {inputs.map((input, i) => (
         <Socket
           key={input.id}
+          id={input.id}
           type="input"
           nodeType={type}
           nth={i}

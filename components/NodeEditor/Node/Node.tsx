@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion'
-import { Observer } from 'mobx-react'
+import { Observer } from 'mobx-react-lite'
 import { useStore } from '../EditorProvider'
 import { Label } from './Label'
 import Sockets from './Sockets'
 import styled from 'styled-components'
 import { Node as PureNode } from './nodeTypes'
-import { EditorProvider } from './NodeProvider'
+import { NodeProvider } from './NodeProvider'
 import { Background } from './Background'
 export type { NodeType } from './nodeTypes'
 
@@ -28,6 +28,7 @@ export const Node = ({ id }: INode) => {
       else select(id)
     }
   }
+
   return (
     <Observer
       render={() => {
@@ -38,7 +39,7 @@ export const Node = ({ id }: INode) => {
           y += drag.y
         }
         return (
-          <EditorProvider node={node}>
+          <NodeProvider id={id}>
             <Container
               onTapStart={ev => handleTapStart(ev, id, selected)}
               onPan={(ev, info) => handlePan(ev, info, true)}
@@ -48,7 +49,7 @@ export const Node = ({ id }: INode) => {
               <Label />
               <Sockets />
             </Container>
-          </EditorProvider>
+          </NodeProvider>
         )
       }}></Observer>
   )

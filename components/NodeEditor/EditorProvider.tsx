@@ -1,9 +1,10 @@
 import { createContext, useContext } from 'react'
-import { useLocalObservable } from 'mobx-react'
+import { useLocalObservable } from 'mobx-react-lite'
 import { NodeType } from './Node'
 import { PanInfo, TapInfo } from 'framer-motion'
 import { Box2D, getBox } from './Selector'
 
+export type SetInput = (action: { nodeId: string; socketId: string; value: any }) => void
 interface IStore {
   nodes: NodeType[]
   drag: {
@@ -14,6 +15,8 @@ interface IStore {
     box: null | Box2D
   }
   getNode: (id: string) => NodeType
+  setNode: (changedNode: NodeType) => void
+  setInput: SetInput
   handlePanStart: (ev, info: PanInfo) => void
   handlePan: (ev, info: PanInfo, isNode?: boolean) => void
   handlePanEnd: (ev, info: PanInfo) => void
@@ -40,10 +43,31 @@ export const EditorProvider = ({ children, initialNodes }) => {
         panning: false,
         box: null,
       },
-      getNode(id: string) {
+      getNode(id) {
         const node = store.nodes.find(n => n.id === id)
         if (node) return node
         else throw new Error('Node not found.')
+      },
+      setNode(changedNode: NodeType) {
+        const existingNode = store.nodes.find(n => n.id === changedNode.id)
+        if (existingNode) {
+          const index = store.nodes.indexOf(existingNode)
+          store.nodes[index] = changedNode
+        }
+        //store.nodes.map(node => (node.id === changedNode.id ? changedNode : node))
+      },
+      setInput({ nodeId, socketId, value }) {
+        console.log('setInput()')
+        store.nodes = store.nodes.map(node =>
+          node.id === nodeId
+            ? {
+                ...node,
+                inputs: node.inputs.map(input =>
+                  input.id === socketId ? { ...input, value } : input
+                ),
+              }
+            : node
+        )
       },
       handlePanStart(ev, info) {
         if (!ev.shiftKey) store.deselectAll()

@@ -1,18 +1,20 @@
 import { motion } from 'framer-motion'
+import { Observer } from 'mobx-react-lite'
 import { useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { NodeType } from '../Node'
+import { useNode } from '../NodeProvider'
 
 export interface SocketProps {
+  id: string
   width: number
   nth: number
-  value: any
   type: 'input' | 'output'
   nodeType: NodeType
 }
 
-export const Socket = ({ value, nth, type, width, nodeType }: SocketProps) => {
-  const [editing, setEditing] = useState(false)
+export const Socket = ({ nth, type, width, nodeType, id }: SocketProps) => {
+  const node = useNode()
   const y = 23 + nth * 14
   const isInput = type === 'input'
   const x = isInput ? 0 : width - 15
@@ -20,32 +22,41 @@ export const Socket = ({ value, nth, type, width, nodeType }: SocketProps) => {
 
   const inputX = isInput ? 14 : -30
 
-  const handleEdit = () => {
-    setEditing(true)
+  const handleChange = ev => {
+    node.setInput({ socketId: id, value: parseInt(ev.target.value) })
   }
 
   return (
-    <Container style={{ x, y }}>
-      <motion.rect fill="rgba(0,0,0,0)" width="14" height="14" />
-      <circle cx={isInput ? 6 : 9} cy="6" r="2" fill="gray" />
-      <motion.circle
-        strokeWidth="2"
-        stroke="transparent"
-        style={{ fill: 'transparent' }}
-        cx="6"
-        cy="6"
-        r="5"
-        fill="none"
-      />
-      {!hideInput && (
-        <Input
-          value={value}
-          x={inputX}
-          textAlign={isInput ? 'left' : 'right'}
-          disabled={!isInput}
-        />
-      )}
-    </Container>
+    <Observer
+      render={() => {
+        const socket = node.inputs.find(input => input.id === id)
+        if (!socket) return null
+        return (
+          <Container style={{ x, y }}>
+            <motion.rect fill="rgba(0,0,0,0)" width="14" height="14" />
+            <circle cx={isInput ? 6 : 9} cy="6" r="2" fill="gray" />
+            <motion.circle
+              strokeWidth="2"
+              stroke="transparent"
+              style={{ fill: 'transparent' }}
+              cx="6"
+              cy="6"
+              r="5"
+              fill="none"
+            />
+            {!hideInput && (
+              <Input
+                x={inputX}
+                value={socket.value}
+                onChange={handleChange}
+                textAlign={isInput ? 'left' : 'right'}
+                disabled={!isInput}
+              />
+            )}
+          </Container>
+        )
+      }}
+    />
   )
 }
 
@@ -56,7 +67,7 @@ const Container = styled(motion.g)`
   }
 `
 
-const Input = ({ value, disabled, x, textAlign }) => {
+const Input = ({ disabled, x, textAlign, onChange, value }) => {
   const [editing, setEditing] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -90,6 +101,7 @@ const Input = ({ value, disabled, x, textAlign }) => {
         ref={inputRef}
         type="text"
         disabled={disabled || !editing}
+        onChange={onChange}
         value={value}
       />
     </InputContainer>

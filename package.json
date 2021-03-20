@@ -9,7 +9,7 @@
   "dependencies": {
     "framer-motion": "^3.10.0",
     "mobx": "^6.1.8",
-    "mobx-react": "^7.1.0",
+    "mobx-react-lite": "^3.2.0",
     "next": "latest",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
