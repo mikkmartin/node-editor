@@ -43,7 +43,7 @@ export const EditorProvider = ({ children, initialNodes }) => {
       getNode(id: string) {
         const node = store.nodes.find(n => n.id === id)
         if (node) return node
-        else throw new Error('Node node found.')
+        else throw new Error('Node not found.')
       },
       handlePanStart(ev, info) {
         if (!ev.shiftKey) store.deselectAll()
