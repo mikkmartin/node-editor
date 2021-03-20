@@ -12,7 +12,7 @@ export interface INode extends PureNode {
 }
 
 export const Node = ({ id }: INode) => {
-  const { drag, select, deselect, deselectAll, nodes, handlePan, handlePanEnd } = useStore()
+  const { drag, getNode, select, deselect, deselectAll, handlePan, handlePanEnd } = useStore()
 
   const handleTapStart = (ev, id, selected) => {
     ev.stopPropagation()
@@ -29,9 +29,8 @@ export const Node = ({ id }: INode) => {
   return (
     <Observer
       render={() => {
-        const node = nodes.find(n => n.id === id) as INode
-        const { selected } = node
-        let { x, y } = node
+        const node = getNode(id)
+        let { selected, x, y } = node
         if (selected && !drag.box) {
           x += drag.x
           y += drag.y

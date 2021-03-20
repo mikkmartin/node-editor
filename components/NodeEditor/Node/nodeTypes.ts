@@ -68,8 +68,8 @@ const getInputs = (type: NodeType, initialInputs?: any[]): Sockets => {
   switch (type) {
     case 'add':
       return {
-        inputs: mapInputs([0, 0, 0], initialInputs),
-        outputs: mapInputs([0]),
+        inputs: generateSockets([0, 0, 0], initialInputs),
+        outputs: generateSockets([0]),
       }
     default:
       return {
@@ -79,7 +79,7 @@ const getInputs = (type: NodeType, initialInputs?: any[]): Sockets => {
   }
 }
 
-const mapInputs = (defaults, initialValues?: any[]) =>
+const generateSockets = (defaults, initialValues?: any[]) =>
   defaults.map((defaultValue, i) => ({
     id: nanoid(),
     value: initialValues && initialValues?.length > i ? initialValues[i] : defaultValue,

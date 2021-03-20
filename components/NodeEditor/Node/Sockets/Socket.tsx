@@ -68,7 +68,7 @@ const Input = ({ value, disabled, x, textAlign }) => {
 
   useEffect(() => {
     if (inputRef.current && editing) {
-      console.log(inputRef.current)
+      //console.log(inputRef.current)
       inputRef.current.focus()
       inputRef.current.select()
     }

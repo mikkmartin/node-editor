@@ -13,6 +13,7 @@ interface IStore {
     dragging: boolean
     box: null | Box2D
   }
+  getNode: (id: string) => NodeType
   handlePanStart: (ev, info: PanInfo) => void
   handlePan: (ev, info: PanInfo, isNode?: boolean) => void
   handlePanEnd: (ev, info: PanInfo) => void
@@ -38,6 +39,11 @@ export const EditorProvider = ({ children, initialNodes }) => {
         dragging: false,
         panning: false,
         box: null,
+      },
+      getNode(id: string) {
+        const node = store.nodes.find(n => n.id === id)
+        if (node) return node
+        else throw new Error('Node node found.')
       },
       handlePanStart(ev, info) {
         if (!ev.shiftKey) store.deselectAll()
