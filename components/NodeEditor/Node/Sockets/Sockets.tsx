@@ -45,5 +45,5 @@ const compute = (inputs: ISocket[], outputs: ISocket[], type: NodeType) => {
 const add = (inputs: ISocket[]): ISocket =>
   inputs.reduce((a, { value }) => ({
     ...a,
-    value: typeof a.value === 'number' ? a.value : a.value.toString() + value,
+    value: typeof a.value === 'number' ? +a.value + +value : a.value.toString() + value,
   }))
