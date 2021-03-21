@@ -15,7 +15,7 @@ export const Sockets = () => {
       {inputs.map((input, i) => (
         <Observer
           render={() => {
-            const socket = inputs.find(_input => _input.id === input.id)
+            const socket = inputs.find(({ id }) => id === input.id)
             if (!socket) return null
             return (
               <Socket
