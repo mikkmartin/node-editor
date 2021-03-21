@@ -33,7 +33,9 @@ export const Wire: FC<WireProps> = ({ id }) => {
               }}
             />
             {active
-              ? [source, target].map(el => <circle cx={el.x} cy={el.y} r={2} fill="white" />)
+              ? [source, target].map((el, i) => (
+                  <circle key={i} cx={el.x} cy={el.y} r={2} fill="white" />
+                ))
               : null}
           </>
         )

@@ -18,6 +18,7 @@ interface IStore {
     box: null | Box2D
   }
   getWireProps: (id: string) => { source: Point2D; target: Point2D; active: boolean }
+  removeWire: (id: string) => void
   getNode: (id: string) => NodeType
   setInput: SetInput
   handlePanStart: (ev, info: PanInfo) => void
@@ -79,7 +80,14 @@ export const EditorProvider = ({ children, nodes, wires }) => {
       setInput({ nodeId, socketId, value }) {
         const node = store.nodes.find(node => node.id === nodeId)
         const socket = node?.inputs.find(input => input.id === socketId)
-        if (socket) socket.value = value
+        if (socket) {
+          socket.value = value
+          const connectedWire = store.wires.find(wire => wire.target === socket.id)
+          if (connectedWire) store.removeWire(connectedWire.id)
+        }
+      },
+      removeWire(id) {
+        store.wires = store.wires.filter(w => w.id !== id)
       },
       handlePanStart(ev, info) {
         if (!ev.shiftKey) store.deselectAll()

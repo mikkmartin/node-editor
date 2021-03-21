@@ -6,38 +6,45 @@ import { Wire } from './Wire'
 import { Debugger } from './Debugger'
 import { FilterDefs } from './FilterDefs'
 import { Selector } from './Selector'
+import { Observer } from 'mobx-react-lite'
 
 export const Canvas = () => {
-  const {
-    nodes,
-    wires,
-    getWireProps,
-    handlePan,
-    handlePanEnd,
-    handlePanStart,
-    handleTap,
-    handleTapCancel,
-  } = useStore()
+  const store = useStore()
 
   return (
-    <Container
-      onPanStart={handlePanStart}
-      onPan={handlePan}
-      onPanEnd={handlePanEnd}
-      onTap={handleTap}
-      onTapCancel={handleTapCancel}
-      width="100vw"
-      height="100vh">
-      {nodes.map(props => (
-        <Node key={props.id} {...props} />
-      ))}
-      {wires.map(props => (
-        <Wire key={props.id} {...props} />
-      ))}
-      <Debugger />
-      <FilterDefs />
-      <Selector />
-    </Container>
+    <Observer
+      render={() => {
+        const {
+          nodes,
+          wires,
+          handlePan,
+          handlePanEnd,
+          handlePanStart,
+          handleTap,
+          handleTapCancel,
+        } = store
+        return (
+          <Container
+            onPanStart={handlePanStart}
+            onPan={handlePan}
+            onPanEnd={handlePanEnd}
+            onTap={handleTap}
+            onTapCancel={handleTapCancel}
+            width="100vw"
+            height="100vh">
+            {nodes.map(props => (
+              <Node key={props.id} {...props} />
+            ))}
+            {wires.map(props => (
+              <Wire key={props.id} {...props} />
+            ))}
+            <Debugger />
+            <FilterDefs />
+            <Selector />
+          </Container>
+        )
+      }}
+    />
   )
 }
 
