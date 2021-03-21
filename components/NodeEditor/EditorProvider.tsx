@@ -17,7 +17,7 @@ interface IStore {
     dragging: boolean
     box: null | Box2D
   }
-  getWireProps: (id: string) => { source: Point2D; target: Point2D }
+  getWireProps: (id: string) => { source: Point2D; target: Point2D; active: boolean }
   getNode: (id: string) => NodeType
   setInput: SetInput
   handlePanStart: (ev, info: PanInfo) => void
@@ -50,18 +50,25 @@ export const EditorProvider = ({ children, nodes, wires }) => {
       getWireProps(id) {
         const wire = store.wires.find(w => w.id === id)
         if (!wire) throw new Error('Wire not dound.')
-        const source = store.nodes.find(n => n.id === wire.source)
-        const target = store.nodes.find(n => n.id === wire.target)
+        const source = store.nodes.find(n => n.outputs.map(({ id }) => id).includes(wire.source))
+        const target = store.nodes.find(n => n.inputs.map(({ id }) => id).includes(wire.target))
         if (!source || !target) throw new Error('Source/Target not found.')
+
+        const sourceY = source.y + source.outputs.map(({ id }) => id).indexOf(wire.source) * 14 + 29
+        const sourceX = source.x + source.width - 6
+
+        const targetX = target.x + 6
+        const targetY = target.y + target.inputs.map(({ id }) => id).indexOf(wire.target) * 14 + 29
         return {
           source: {
-            x: source.selected ? source.x + store.drag.x : source.x,
-            y: source.selected ? source.y + store.drag.y : source.y,
+            x: source.selected ? sourceX + store.drag.x : sourceX,
+            y: source.selected ? sourceY + store.drag.y : sourceY,
           },
           target: {
-            x: target.selected ? target.x + store.drag.x : target.x,
-            y: target.selected ? target.y + store.drag.y : target.y,
+            x: target.selected ? targetX + store.drag.x : targetX,
+            y: target.selected ? targetY + store.drag.y : targetY,
           },
+          active: source.selected || target.selected,
         }
       },
       getNode(id) {

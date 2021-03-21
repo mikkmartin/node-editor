@@ -17,15 +17,25 @@ export const Wire: FC<WireProps> = ({ id }) => {
   return (
     <Observer
       render={() => {
-        const { source, target } = getWireProps(id)
+        const { source, target, active } = getWireProps(id)
         return (
-          <line
-            x1={source.x}
-            y1={source.y}
-            x2={target.x}
-            y2={target.y}
-            style={{ stroke: 'rgba(255, 255, 255, 0.5)', strokeWidth: 2 }}
-          />
+          <>
+            <path
+              d={`M ${source.x} ${source.y} C ${(source.x + target.x) / 2} ${source.y} ${
+                (source.x + target.x) / 2
+              } ${target.y} ${target.x} ${target.y}`}
+              strokeLinecap="round"
+              style={{
+                pointerEvents: 'none',
+                stroke: active ? 'var(--highlight)' : 'rgba(255, 255, 255, 0.4)',
+                fill: 'none',
+                strokeWidth: 2,
+              }}
+            />
+            {active
+              ? [source, target].map(el => <circle cx={el.x} cy={el.y} r={2} fill="white" />)
+              : null}
+          </>
         )
       }}
     />
