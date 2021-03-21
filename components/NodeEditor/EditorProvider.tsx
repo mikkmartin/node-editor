@@ -35,7 +35,7 @@ const Context = createContext<IStore>()
 export const EditorProvider = ({ children, initialNodes }) => {
   const store = useLocalObservable(
     (): IStore => ({
-      nodes: observable.array(initialNodes, { deep: true }),
+      nodes: initialNodes,
       drag: {
         x: 0,
         y: 0,
