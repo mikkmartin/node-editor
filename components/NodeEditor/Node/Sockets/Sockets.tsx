@@ -1,6 +1,7 @@
 import { Socket } from './Socket'
 import { NodeType } from '../Node'
 import { useNode } from '../NodeProvider'
+import { Observer } from 'mobx-react-lite'
 
 export interface ISocket {
   id: string
@@ -11,28 +12,44 @@ export const Sockets = () => {
   const { inputs, outputs, width, type } = useNode()
   return (
     <>
-      {compute(inputs, outputs, type).map((output, i) => (
-        <Socket
-          key={output.id}
-          id={output.id}
-          type="output"
-          nodeType={type}
-          nth={i}
-          value={output.value}
-          width={width}
-        />
-      ))}
       {inputs.map((input, i) => (
-        <Socket
-          key={input.id}
-          id={input.id}
-          type="input"
-          nodeType={type}
-          nth={i}
-          value={input.value}
-          width={width}
+        <Observer
+          render={() => {
+            const socket = inputs.find(_input => _input.id === input.id)
+            if (!socket) return null
+            return (
+              <Socket
+                key={socket.id}
+                id={socket.id}
+                value={socket.value}
+                type="input"
+                nodeType={type}
+                nth={i}
+                width={width}
+              />
+            )
+          }}
         />
       ))}
+      <Observer
+        render={() => {
+          return (
+            <>
+              {compute(inputs, outputs, type).map((output, i) => (
+                <Socket
+                  key={output.id}
+                  id={output.id}
+                  type="output"
+                  nodeType={type}
+                  nth={i}
+                  width={width}
+                  value={output.value}
+                />
+              ))}
+            </>
+          )
+        }}
+      />
     </>
   )
 }

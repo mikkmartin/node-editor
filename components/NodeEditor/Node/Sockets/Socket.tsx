@@ -11,9 +11,10 @@ export interface SocketProps {
   nth: number
   type: 'input' | 'output'
   nodeType: NodeType
+  value: any
 }
 
-export const Socket = ({ nth, type, width, nodeType, id }: SocketProps) => {
+export const Socket = ({ nth, type, width, nodeType, id, value }: SocketProps) => {
   const node = useNode()
   const y = 23 + nth * 14
   const isInput = type === 'input'
@@ -28,36 +29,28 @@ export const Socket = ({ nth, type, width, nodeType, id }: SocketProps) => {
   }
 
   return (
-    <Observer
-      render={() => {
-        const socket = node.inputs.find(input => input.id === id)
-        if (!socket) return null
-        return (
-          <Container style={{ x, y }}>
-            <motion.rect fill="rgba(0,0,0,0)" width="14" height="14" />
-            <circle cx={isInput ? 6 : 9} cy="6" r="2" fill="gray" />
-            <motion.circle
-              strokeWidth="2"
-              stroke="transparent"
-              style={{ fill: 'transparent' }}
-              cx="6"
-              cy="6"
-              r="5"
-              fill="none"
-            />
-            {!hideInput && (
-              <Input
-                x={inputX}
-                value={socket.value}
-                onChange={handleChange}
-                textAlign={isInput ? 'left' : 'right'}
-                disabled={!isInput}
-              />
-            )}
-          </Container>
-        )
-      }}
-    />
+    <Container style={{ x, y }}>
+      <motion.rect fill="rgba(0,0,0,0)" width="14" height="14" />
+      <circle cx={isInput ? 6 : 9} cy="6" r="2" fill="gray" />
+      <motion.circle
+        strokeWidth="2"
+        stroke="transparent"
+        style={{ fill: 'transparent' }}
+        cx="6"
+        cy="6"
+        r="5"
+        fill="none"
+      />
+      {!hideInput && (
+        <Input
+          x={inputX}
+          value={value}
+          onChange={handleChange}
+          textAlign={isInput ? 'left' : 'right'}
+          disabled={!isInput}
+        />
+      )}
+    </Container>
   )
 }
 
