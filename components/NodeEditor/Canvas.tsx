@@ -2,12 +2,22 @@ import { motion } from 'framer-motion'
 import styled from 'styled-components'
 import { useStore } from './EditorProvider'
 import { Node } from './Node'
+import { Wire } from './Wire'
 import { Debugger } from './Debugger'
 import { FilterDefs } from './FilterDefs'
 import { Selector } from './Selector'
 
 export const Canvas = () => {
-  const { nodes, handlePan, handlePanEnd, handlePanStart, handleTap, handleTapCancel } = useStore()
+  const {
+    nodes,
+    wires,
+    getWireProps,
+    handlePan,
+    handlePanEnd,
+    handlePanStart,
+    handleTap,
+    handleTapCancel,
+  } = useStore()
 
   return (
     <Container
@@ -20,6 +30,9 @@ export const Canvas = () => {
       height="100vh">
       {nodes.map(props => (
         <Node key={props.id} {...props} />
+      ))}
+      {wires.map(props => (
+        <Wire key={props.id} {...props} />
       ))}
       <Debugger />
       <FilterDefs />

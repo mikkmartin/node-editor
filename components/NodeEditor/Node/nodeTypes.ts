@@ -44,8 +44,8 @@ export const getNodeProps = (initialProps: NodeProps): Node => {
 
 const addNode = props => {
   return {
-    ...props,
     id: nanoid(),
+    ...props,
     x: 20,
     width: 89,
   }
@@ -53,8 +53,8 @@ const addNode = props => {
 
 const numberNode = props => {
   return {
-    ...props,
     id: nanoid(),
+    ...props,
     x: 20,
     width: 68,
   }

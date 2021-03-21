@@ -1,13 +1,15 @@
 import { createContext, useContext } from 'react'
 import { useLocalObservable } from 'mobx-react-lite'
-import { observable } from 'mobx'
 import { NodeType } from './Node'
+import { WireType } from './Wire'
 import { PanInfo, TapInfo } from 'framer-motion'
 import { Box2D, getBox } from './Selector'
 
+type Point2D = { x: number; y: number }
 export type SetInput = (action: { nodeId: string; socketId: string; value: any }) => void
 interface IStore {
   nodes: NodeType[]
+  wires: WireType[]
   drag: {
     x: number
     y: number
@@ -15,6 +17,7 @@ interface IStore {
     dragging: boolean
     box: null | Box2D
   }
+  getWireProps: (id: string) => { source: Point2D; target: Point2D }
   getNode: (id: string) => NodeType
   setInput: SetInput
   handlePanStart: (ev, info: PanInfo) => void
@@ -32,16 +35,34 @@ interface IStore {
 //@ts-ignore
 const Context = createContext<IStore>()
 
-export const EditorProvider = ({ children, initialNodes }) => {
+export const EditorProvider = ({ children, nodes, wires }) => {
   const store = useLocalObservable(
     (): IStore => ({
-      nodes: initialNodes,
+      nodes,
+      wires,
       drag: {
         x: 0,
         y: 0,
         dragging: false,
         panning: false,
         box: null,
+      },
+      getWireProps(id) {
+        const wire = store.wires.find(w => w.id === id)
+        if (!wire) throw new Error('Wire not dound.')
+        const source = store.nodes.find(n => n.id === wire.source)
+        const target = store.nodes.find(n => n.id === wire.target)
+        if (!source || !target) throw new Error('Source/Target not found.')
+        return {
+          source: {
+            x: source.selected ? source.x + store.drag.x : source.x,
+            y: source.selected ? source.y + store.drag.y : source.y,
+          },
+          target: {
+            x: target.selected ? target.x + store.drag.x : target.x,
+            y: target.selected ? target.y + store.drag.y : target.y,
+          },
+        }
       },
       getNode(id) {
         const node = store.nodes.find(n => n.id === id)

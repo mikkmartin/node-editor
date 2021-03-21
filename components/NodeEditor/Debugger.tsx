@@ -9,7 +9,7 @@ export const Debugger = () => {
       {() => {
         return (
           <foreignObject x="80%" y="20" width="160" height="100">
-            <pre>{JSON.stringify(store.drag, null, 2)}</pre>
+            <pre style={{ color: 'white' }}>{JSON.stringify(store.drag, null, 2)}</pre>
           </foreignObject>
         )
       }}
