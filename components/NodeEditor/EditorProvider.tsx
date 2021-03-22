@@ -61,14 +61,15 @@ export const EditorProvider = ({ children, nodes, wires }) => {
 
         const targetX = target.x + 6
         const targetY = target.y + target.inputs.map(({ id }) => id).indexOf(wire.target) * 14 + 29
+
         return {
           source: {
-            x: source.selected ? sourceX + store.drag.x : sourceX,
-            y: source.selected ? sourceY + store.drag.y : sourceY,
+            x: source.selected && !store.drag.box ? sourceX + store.drag.x : sourceX,
+            y: source.selected && !store.drag.box ? sourceY + store.drag.y : sourceY,
           },
           target: {
-            x: target.selected ? targetX + store.drag.x : targetX,
-            y: target.selected ? targetY + store.drag.y : targetY,
+            x: target.selected && !store.drag.box ? targetX + store.drag.x : targetX,
+            y: target.selected && !store.drag.box ? targetY + store.drag.y : targetY,
           },
           active: source.selected || target.selected,
         }
@@ -83,6 +84,7 @@ export const EditorProvider = ({ children, nodes, wires }) => {
         const socket = node?.inputs.find(input => input.id === socketId)
         if (node && socket) {
           socket.value = value
+          //TODO don't update inputs for existing node
           store.updateDependancies(node.id, value)
           const connectedWire = store.wires.find(wire => wire.target === socket.id)
           if (connectedWire) store.removeWire(connectedWire.id)
