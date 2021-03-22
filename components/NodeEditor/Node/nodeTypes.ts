@@ -25,7 +25,8 @@ export const getNodeProps = (initialProps: NodeProps): Node => {
   const sockets = getInputs(type, inputs)
   const height = calcNodeHeight(sockets)
   const x = initialProps.x || 20
-  const defaults = { x, y: runningY, height, ...sockets }
+  const y = initialProps.y || runningY
+  const defaults = { x, y, height, ...sockets }
 
   let node
   switch (initialProps.type) {
@@ -38,7 +39,7 @@ export const getNodeProps = (initialProps: NodeProps): Node => {
     default:
       node = { ...numberNode(initialProps), ...defaults }
   }
-  runningY += height + 2
+  if (!initialProps.y) runningY += height + 2
   return node
 }
 

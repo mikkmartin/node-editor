@@ -18,7 +18,7 @@ interface IStore {
     box: null | Box2D
   }
   getWireProps: (id: string) => { source: Point2D; target: Point2D; active: boolean }
-  updateDependancies: (id: string, value: any) => void
+  updateDependancies: (node: NodeType, value: any) => void
   removeWire: (id: string) => void
   getNode: (id: string) => NodeType
   setInput: SetInput
@@ -85,15 +85,12 @@ export const EditorProvider = ({ children, nodes, wires }) => {
         if (node && socket) {
           socket.value = value
           //TODO don't update inputs for existing node
-          store.updateDependancies(node.id, value)
+          store.updateDependancies(node, value)
           const connectedWire = store.wires.find(wire => wire.target === socket.id)
           if (connectedWire) store.removeWire(connectedWire.id)
         }
       },
-      updateDependancies(id, value) {
-        const node = store.nodes.find(node => node.id === id)
-        if (!node) throw new Error('Node not found.')
-
+      updateDependancies(node, value) {
         const outputWires: WireType[] = node.outputs.reduce((all, output) => {
           const connected = store.wires.find(({ source }) => source === output.id)
           if (connected) return [...all, connected]
