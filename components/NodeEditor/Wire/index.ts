@@ -1,4 +1,4 @@
+export { ConnectedWire } from './ConnectedWire'
 export { Wire } from './Wire'
-import { IWire } from './Wire'
-
-export type WireType = IWire
+export { DragWire } from './DragWire'
+export type { IWire as WireType } from './ConnectedWire'

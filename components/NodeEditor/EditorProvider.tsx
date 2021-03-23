@@ -5,11 +5,17 @@ import { WireType } from './Wire'
 import { PanInfo, TapInfo } from 'framer-motion'
 import { Box2D, getBox } from './Selector'
 
-type Point2D = { x: number; y: number }
+export type Point2D = { x: number; y: number }
 export type SetInput = (action: { nodeId: string; socketId: string; value: any }) => void
-interface IStore {
+export interface WireEvents {
+  handleWireStart: (x, y) => void
+  handleWireMove: (x, y) => void
+  handleWireEnd: () => void
+}
+interface IStore extends WireEvents {
   nodes: NodeType[]
   wires: WireType[]
+  drawWire: { dragging: boolean; start: Point2D; end: Point2D }
   drag: {
     x: number
     y: number
@@ -43,6 +49,11 @@ export const EditorProvider = ({ children, nodes, wires }) => {
     (): IStore => ({
       nodes,
       wires,
+      drawWire: {
+        start: { x: 0, y: 0 },
+        end: { x: 0, y: 0 },
+        dragging: false,
+      },
       drag: {
         x: 0,
         y: 0,
@@ -162,6 +173,15 @@ export const EditorProvider = ({ children, nodes, wires }) => {
       },
       handleTapCancel() {
         store.drag.panning = false
+      },
+      handleWireStart(x, y) {
+        store.drawWire = { dragging: true, start: { x, y }, end: { x, y } }
+      },
+      handleWireMove(x, y) {
+        if (store.drawWire) store.drawWire.end = { x, y }
+      },
+      handleWireEnd() {
+        store.drawWire = { ...store.drawWire, dragging: false }
       },
       select(id) {
         store.nodes.find(n => {

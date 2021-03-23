@@ -1,5 +1,4 @@
-import { motion } from 'framer-motion'
-import { Observer } from 'mobx-react-lite'
+import { motion, PanInfo } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { NodeType } from '../Node'
@@ -15,11 +14,13 @@ export interface SocketProps {
 }
 
 export const Socket = ({ nth, type, width, nodeType, id, value }: SocketProps) => {
-  const node = useNode()
-  const y = 23 + nth * 14
+  const { handleWireStart, handleWireMove, handleWireEnd, ...node } = useNode()
+  const y = 22 + nth * 14
   const isInput = type === 'input'
   const x = isInput ? 0 : width - 15
   const hideInput = nodeType === 'number' && !isInput
+  const circleX = isInput ? 6 : 9
+  const circleY = 7
 
   const inputX = isInput ? 14 : -30
 
@@ -28,19 +29,39 @@ export const Socket = ({ nth, type, width, nodeType, id, value }: SocketProps) =
     node.setInput({ id, value: parseInt(ev.target.value) })
   }
 
+  const handlePanStart = () => {
+    handleWireStart(node.x + x + circleX, node.y + y + circleY)
+  }
+
+  const handlePanDrag = (_, info: PanInfo) => {
+    handleWireMove(node.x + x + info.offset.x + circleX, node.y + y + info.offset.y + circleY)
+  }
+
+  const handlePanEnd = () => {
+    handleWireEnd()
+  }
+
   return (
     <Container style={{ x, y }}>
-      <motion.rect fill="rgba(0,0,0,0)" width="14" height="14" />
-      <circle cx={isInput ? 6 : 9} cy="6" r="2" fill="gray" />
-      <motion.circle
-        strokeWidth="2"
-        stroke="transparent"
-        style={{ fill: 'transparent' }}
-        cx="6"
-        cy="6"
-        r="5"
-        fill="none"
-      />
+      <motion.g
+        whileHover="hover"
+        onTapStart={ev => ev.stopPropagation()}
+        onPanStart={handlePanStart}
+        onPan={handlePanDrag}
+        onPanEnd={handlePanEnd}>
+        <rect fill="rgba(0,0,0,0.0)" width="14" height="14" />
+        <circle cx={circleX} cy={circleY} r="2" fill="gray" />
+        <motion.circle
+          variants={{ hover: { stroke: 'rgba(255,255,255,0.35)', transition: { duration: 0 } } }}
+          transition={{ duration: 0.2 }}
+          cx={circleX}
+          cy={circleY}
+          r="4.5"
+          strokeWidth="2"
+          fill="none"
+          stroke="rgba(255,255,255,0)"
+        />
+      </motion.g>
       {!hideInput && (
         <Input
           x={inputX}
@@ -88,8 +109,7 @@ const Input = ({ disabled, x, textAlign, onChange, value }) => {
         default: { opacity: 0.1 },
         hover: { opacity: 1 },
       }}
-      x={x}
-      y="-1">
+      x={x}>
       <input
         style={{ textAlign }}
         ref={inputRef}

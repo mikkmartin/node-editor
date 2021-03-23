@@ -1,5 +1,4 @@
 import { Socket } from './Socket'
-import { NodeType } from '../Node'
 import { useNode } from '../NodeProvider'
 import { Observer } from 'mobx-react-lite'
 
@@ -14,12 +13,12 @@ export const Sockets = () => {
     <>
       {inputs.map((input, i) => (
         <Observer
+          key={input.id}
           render={() => {
             const socket = inputs.find(({ id }) => id === input.id)
             if (!socket) return null
             return (
               <Socket
-                key={socket.id}
                 id={socket.id}
                 value={socket.value}
                 type="input"
@@ -33,6 +32,7 @@ export const Sockets = () => {
       ))}
       {outputs.map((output, i) => (
         <Observer
+          key={output.id}
           render={() => {
             const socket = outputs.find(({ id }) => id === output.id)
             if (!socket) return null

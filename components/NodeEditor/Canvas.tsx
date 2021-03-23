@@ -2,27 +2,26 @@ import { motion } from 'framer-motion'
 import styled from 'styled-components'
 import { useStore } from './EditorProvider'
 import { Node } from './Node'
-import { Wire } from './Wire'
+import { DragWire, ConnectedWire } from './Wire'
 import { Debugger } from './Debugger'
 import { FilterDefs } from './FilterDefs'
 import { Selector } from './Selector'
 import { Observer } from 'mobx-react-lite'
 
 export const Canvas = () => {
-  const store = useStore()
+  const {
+    handlePan,
+    handlePanEnd,
+    handlePanStart,
+    handleTap,
+    handleTapCancel,
+    ...rest
+  } = useStore()
 
   return (
     <Observer
       render={() => {
-        const {
-          nodes,
-          wires,
-          handlePan,
-          handlePanEnd,
-          handlePanStart,
-          handleTap,
-          handleTapCancel,
-        } = store
+        const { nodes, wires } = rest
         return (
           <Container
             onPanStart={handlePanStart}
@@ -36,8 +35,9 @@ export const Canvas = () => {
               <Node key={props.id} {...props} />
             ))}
             {wires.map(props => (
-              <Wire key={props.id} {...props} />
+              <ConnectedWire key={props.id} {...props} />
             ))}
+            <DragWire />
             <Debugger />
             <FilterDefs />
             <Selector />

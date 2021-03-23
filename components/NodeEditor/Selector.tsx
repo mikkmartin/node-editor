@@ -11,7 +11,6 @@ export interface Box2D {
 
 export const Selector = () => {
   const { drag } = useStore()
-  //cosnt { x, y, width, height } useSelector()
 
   return (
     <Observer
@@ -32,7 +31,8 @@ export const Selector = () => {
             }}
           />
         )
-      }}></Observer>
+      }}
+    />
   )
 }
 
