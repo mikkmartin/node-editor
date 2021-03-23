@@ -55,7 +55,7 @@ export const Socket = ({
   }
 
   const handleHoverEnd = () => {
-    console.log(target)
+    target
     target = undefined
   }
 
