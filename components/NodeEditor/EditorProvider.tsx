@@ -186,7 +186,7 @@ export const EditorProvider = ({ children, nodes, wires }) => {
       handleWireMove(x, y) {
         if (store.drawWire) store.drawWire.end = { x, y }
       },
-      handleWireEnd(target) {
+      handleWireEnd() {
         if (store.drawWire?.source && store.drawWire.target)
           store.wires.push({
             id: nanoid(),

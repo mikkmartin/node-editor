@@ -50,15 +50,12 @@ export const Socket = ({
     handleWireMove(node.x + x + info.offset.x + circleX, node.y + y + info.offset.y + circleY)
   }
 
-  const handlePanEnd = () => {
-    handleWireEnd(id)
-  }
-
   const handleHoverStart = () => {
     if (connecting && type === 'input' && source) setWireTarget(id)
   }
 
   const handleHoverEnd = () => {
+    console.log(target)
     target = undefined
   }
 
@@ -69,7 +66,7 @@ export const Socket = ({
         onTapStart={ev => ev.stopPropagation()}
         onPanStart={handlePanStart}
         onPan={handlePanDrag}
-        onPanEnd={handlePanEnd}>
+        onPanEnd={() => handleWireEnd}>
         <rect fill="rgba(0,0,0,0.0)" width="14" height="14" />
         <circle cx={circleX} cy={circleY} r="2" fill="gray" />
         <motion.circle
