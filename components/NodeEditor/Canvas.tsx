@@ -54,12 +54,12 @@ const Container = styled(motion.svg)`
   background: #353535;
   width: 100%;
   min-height: 300px;
+  user-select: none;
   text {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
       'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: 10px;
     fill: white;
     text-align: center;
-    user-select: none;
   }
 `
