@@ -92,7 +92,13 @@ export const EditorProvider = ({ children, nodes, wires }) => {
         }
       },
       computeOutputs(node) {
-        if (node.compute) node.outputs = node.compute(node.inputs, node.outputs)
+        if (node.compute) {
+          const newOutputs = node.compute(node.inputs, node.outputs)
+          node.outputs.map((output, i) => {
+            if (output.value !== newOutputs[i].value) output.value = newOutputs[i].value
+            return output
+          })
+        }
       },
       updateDependancies(node) {
         const outputWires: WireType[] = node.outputs.reduce((all, output) => {
