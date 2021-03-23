@@ -178,9 +178,7 @@ export const EditorProvider = ({ children, nodes, wires }) => {
         })
       },
       deselectAll() {
-        store.nodes.forEach(n => {
-          n.selected = false
-        })
+        store.nodes.forEach(n => (n.selected = false))
       },
       setBox(box: null | Box2D) {
         store.drag.box = box
