@@ -18,7 +18,8 @@ interface IStore {
     box: null | Box2D
   }
   getWireProps: (id: string) => { source: Point2D; target: Point2D; active: boolean }
-  updateDependancies: (node: NodeType, value: any) => void
+  computeOutputs: (node: NodeType) => void
+  updateDependancies: (node: NodeType) => void
   removeWire: (id: string) => void
   getNode: (id: string) => NodeType
   setInput: SetInput
@@ -84,39 +85,39 @@ export const EditorProvider = ({ children, nodes, wires }) => {
         const socket = node?.inputs.find(input => input.id === socketId)
         if (node && socket) {
           socket.value = value
-          //TODO don't update inputs for existing node
-          store.updateDependancies(node, value)
+          store.computeOutputs(node)
+          store.updateDependancies(node)
           const connectedWire = store.wires.find(wire => wire.target === socket.id)
           if (connectedWire) store.removeWire(connectedWire.id)
         }
       },
-      updateDependancies(node, value) {
+      computeOutputs(node) {
+        if (node.compute) node.outputs = node.compute(node.inputs, node.outputs)
+      },
+      updateDependancies(node) {
         const outputWires: WireType[] = node.outputs.reduce((all, output) => {
-          const connected = store.wires.find(({ source }) => source === output.id)
+          const connected = store.wires.find(wire => wire.source === output.id)
           if (connected) return [...all, connected]
-          else return wires
-        }, [])
+          else return all
+        }, [] as WireType[])
 
         if (outputWires?.length) {
           const connectedNodes = outputWires.map(wire =>
             store.nodes.find(
               _node =>
-                _node.inputs
-                  .map(input => input.id)
-                  .filter(id => {
-                    const found = wire.target === id
-                    if (found) {
-                      const connectedNode = _node
-                      //const index = connectedNode.inputs.map(input => input.id).indexOf(wire.target)
-                      //connectedNode.inputs[index].value = value
-                      const input = connectedNode.inputs.find(input => input.id === wire.target)
-                      if (input) input.value = value
-                      //if (originalNode) _node.inputs[index].value = originalNode.value
-                      return true
-                    }
-                  }).length > 0
+                _node.inputs.filter(input => {
+                  if (wire.target === input.id) {
+                    input.value = node.outputs[0].value
+                    store.computeOutputs(_node)
+                    return true
+                  }
+                  return false
+                }).length > 0
             )
-          )
+          ) as NodeType[]
+          if (connectedNodes) {
+            connectedNodes.map(store.updateDependancies)
+          }
         }
       },
       removeWire(id) {

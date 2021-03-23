@@ -31,40 +31,25 @@ export const Sockets = () => {
           }}
         />
       ))}
-      <Observer
-        render={() => {
-          return (
-            <>
-              {compute(inputs, outputs, type).map((output, i) => (
-                <Socket
-                  key={output.id}
-                  id={output.id}
-                  type="output"
-                  nodeType={type}
-                  nth={i}
-                  width={width}
-                  value={output.value}
-                />
-              ))}
-            </>
-          )
-        }}
-      />
+      {outputs.map((output, i) => (
+        <Observer
+          render={() => {
+            const socket = outputs.find(({ id }) => id === output.id)
+            if (!socket) return null
+            return (
+              <Socket
+                key={output.id}
+                id={output.id}
+                type="output"
+                nodeType={type}
+                nth={i}
+                width={width}
+                value={output.value}
+              />
+            )
+          }}
+        />
+      ))}
     </>
   )
 }
-
-const compute = (inputs: ISocket[], outputs: ISocket[], type: NodeType) => {
-  switch (type) {
-    case 'add':
-      return [add(inputs)]
-    default:
-      return inputs
-  }
-}
-
-const add = (inputs: ISocket[]): ISocket =>
-  inputs.reduce((a, { value }) => ({
-    ...a,
-    value: typeof a.value === 'number' ? +a.value + +value : a.value.toString() + value,
-  }))
