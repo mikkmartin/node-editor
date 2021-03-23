@@ -1,6 +1,7 @@
 import { Socket } from './Socket'
 import { useNode } from '../NodeProvider'
 import { Observer } from 'mobx-react-lite'
+import { useStore } from 'components/NodeEditor/EditorProvider'
 
 export interface ISocket {
   id: string
@@ -8,6 +9,7 @@ export interface ISocket {
 }
 
 export const Sockets = () => {
+  const store = useStore()
   const { inputs, outputs, width, type } = useNode()
   return (
     <>
@@ -22,6 +24,9 @@ export const Sockets = () => {
                 id={socket.id}
                 value={socket.value}
                 type="input"
+                connecting={Boolean(store.drawWire)}
+                source={store.drawWire?.source}
+                target={store.drawWire?.target}
                 nodeType={type}
                 nth={i}
                 width={width}

@@ -4,18 +4,25 @@ import { NodeType } from './Node'
 import { WireType } from './Wire'
 import { PanInfo, TapInfo } from 'framer-motion'
 import { Box2D, getBox } from './Selector'
+import { nanoid } from 'nanoid'
 
 export type Point2D = { x: number; y: number }
 export type SetInput = (action: { nodeId: string; socketId: string; value: any }) => void
 export interface WireEvents {
-  handleWireStart: (x, y) => void
-  handleWireMove: (x, y) => void
-  handleWireEnd: () => void
+  setWireTarget: (id: string) => void
+  handleWireStart: (id: string, x: number, y: number) => void
+  handleWireMove: (x: number, y: number) => void
+  handleWireEnd: (id: string) => void
 }
 interface IStore extends WireEvents {
   nodes: NodeType[]
   wires: WireType[]
-  drawWire: { dragging: boolean; start: Point2D; end: Point2D }
+  drawWire: null | {
+    source?: string
+    target?: string
+    start: Point2D
+    end: Point2D
+  }
   drag: {
     x: number
     y: number
@@ -49,11 +56,7 @@ export const EditorProvider = ({ children, nodes, wires }) => {
     (): IStore => ({
       nodes,
       wires,
-      drawWire: {
-        start: { x: 0, y: 0 },
-        end: { x: 0, y: 0 },
-        dragging: false,
-      },
+      drawWire: null,
       drag: {
         x: 0,
         y: 0,
@@ -171,17 +174,26 @@ export const EditorProvider = ({ children, nodes, wires }) => {
         if (!store.drag.panning) store.deselectAll()
         store.drag.panning = false
       },
+      setWireTarget(id) {
+        if (store.drawWire) store.drawWire.target = id
+      },
       handleTapCancel() {
         store.drag.panning = false
       },
-      handleWireStart(x, y) {
-        store.drawWire = { dragging: true, start: { x, y }, end: { x, y } }
+      handleWireStart(source, x, y) {
+        store.drawWire = { source, start: { x, y }, end: { x, y } }
       },
       handleWireMove(x, y) {
         if (store.drawWire) store.drawWire.end = { x, y }
       },
-      handleWireEnd() {
-        store.drawWire = { ...store.drawWire, dragging: false }
+      handleWireEnd(target) {
+        if (store.drawWire?.source && store.drawWire.target)
+          store.wires.push({
+            id: nanoid(),
+            source: store.drawWire.source,
+            target: store.drawWire.target,
+          })
+        store.drawWire = null
       },
       select(id) {
         store.nodes.find(n => {

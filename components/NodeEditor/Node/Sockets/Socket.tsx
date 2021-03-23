@@ -11,10 +11,23 @@ export interface SocketProps {
   type: 'input' | 'output'
   nodeType: NodeType
   value: any
+  source?: string
+  target?: string
+  connecting?: boolean
 }
 
-export const Socket = ({ nth, type, width, nodeType, id, value }: SocketProps) => {
-  const { handleWireStart, handleWireMove, handleWireEnd, ...node } = useNode()
+export const Socket = ({
+  nth,
+  type,
+  width,
+  nodeType,
+  id,
+  value,
+  connecting = false,
+  source,
+  target,
+}: SocketProps) => {
+  const { handleWireStart, handleWireMove, handleWireEnd, setWireTarget, ...node } = useNode()
   const y = 22 + nth * 14
   const isInput = type === 'input'
   const x = isInput ? 0 : width - 15
@@ -30,7 +43,7 @@ export const Socket = ({ nth, type, width, nodeType, id, value }: SocketProps) =
   }
 
   const handlePanStart = () => {
-    handleWireStart(node.x + x + circleX, node.y + y + circleY)
+    handleWireStart(id, node.x + x + circleX, node.y + y + circleY)
   }
 
   const handlePanDrag = (_, info: PanInfo) => {
@@ -38,11 +51,19 @@ export const Socket = ({ nth, type, width, nodeType, id, value }: SocketProps) =
   }
 
   const handlePanEnd = () => {
-    handleWireEnd()
+    handleWireEnd(id)
+  }
+
+  const handleHoverStart = () => {
+    if (connecting && type === 'input' && source) setWireTarget(id)
+  }
+
+  const handleHoverEnd = () => {
+    target = undefined
   }
 
   return (
-    <Container style={{ x, y }}>
+    <Container style={{ x, y }} onHoverStart={handleHoverStart} onHoverEnd={handleHoverEnd}>
       <motion.g
         whileHover="hover"
         onTapStart={ev => ev.stopPropagation()}

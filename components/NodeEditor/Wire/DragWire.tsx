@@ -8,7 +8,7 @@ export const DragWire = () => {
   return (
     <Observer
       render={() => {
-        if (!store.drawWire.dragging) return null
+        if (!store.drawWire) return null
         return <Wire {...store.drawWire} active />
       }}
     />

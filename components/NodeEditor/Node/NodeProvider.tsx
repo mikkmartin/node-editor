@@ -10,7 +10,14 @@ interface Props extends INode, WireEvents {
 const Context = createContext<Props>()
 
 export const NodeProvider: FC<{ id: string }> = ({ children, id }) => {
-  const { getNode, setInput, handleWireStart, handleWireMove, handleWireEnd } = useStore()
+  const {
+    getNode,
+    setInput,
+    handleWireStart,
+    handleWireMove,
+    handleWireEnd,
+    setWireTarget,
+  } = useStore()
   const node = getNode(id)
   if (!node) throw new Error('Node not found.')
 
@@ -22,6 +29,7 @@ export const NodeProvider: FC<{ id: string }> = ({ children, id }) => {
         handleWireStart,
         handleWireMove,
         handleWireEnd,
+        setWireTarget,
       }}>
       {children}
     </Context.Provider>
