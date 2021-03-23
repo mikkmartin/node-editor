@@ -11,7 +11,7 @@ export const add = (initialProps: NodeInitialProps): NodeProps => {
     return [output]
   }
 
-  const inputs = generateSockets([0, 0, 0], initialProps.inputs)
+  const inputs = generateSockets([0, 0], initialProps.inputs)
   const outputs = generateSockets([0])
 
   return {
