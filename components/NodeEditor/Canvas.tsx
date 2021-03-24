@@ -9,19 +9,20 @@ import { Selector } from './Selector'
 import { Observer } from 'mobx-react-lite'
 
 export const Canvas = () => {
-  const {
-    handlePan,
-    handlePanEnd,
-    handlePanStart,
-    handleTap,
-    handleTapCancel,
-    ...rest
-  } = useStore()
+  const store = useStore()
 
   return (
     <Observer
       render={() => {
-        const { nodes, wires } = rest
+        const {
+          handlePan,
+          handlePanEnd,
+          handlePanStart,
+          handleTap,
+          handleTapCancel,
+          nodes,
+          wires,
+        } = store
         return (
           <Container
             onPanStart={handlePanStart}

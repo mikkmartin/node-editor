@@ -12,10 +12,5 @@ export default function Home() {
     { source: '3', target: '4' },
     { source: '4', target: '5' },
   ]
-  return (
-    <>
-      <h3>My page</h3>
-      <NodeEditor elements={elements} />
-    </>
-  )
+  return <NodeEditor elements={elements} />
 }
