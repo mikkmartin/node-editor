@@ -188,12 +188,29 @@ export const EditorProvider = ({ children, nodes, wires }) => {
       },
       handleWireEnd() {
         const isPlugged = store.wires.some(wire => wire.target === store.drawWire?.target)
-        if (store.drawWire?.source && store.drawWire.target && !isPlugged)
+        const target = store.drawWire?.target
+        if (store.drawWire?.source && target && !isPlugged) {
+          const source = store.drawWire.source
           store.wires.push({
             id: nanoid(),
-            source: store.drawWire.source,
-            target: store.drawWire.target,
+            source,
+            target,
           })
+          const output = store.nodes
+            .find(n => n.outputs.map(o => o.id).includes(source))
+            ?.outputs.find(o => o.id === source)
+          if (output) {
+            const targetNode = store.nodes.find(n =>
+              n.inputs
+                .map(i => {
+                  if (i.id === target) i.value = output.value
+                  return i.id
+                })
+                .includes(target)
+            )
+            if (targetNode) store.computeOutputs(targetNode)
+          }
+        }
         store.drawWire = null
       },
       select(id) {
