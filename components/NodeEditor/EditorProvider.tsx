@@ -1,4 +1,4 @@
-import { createContext, useContext, useLayoutEffect, useRef } from 'react'
+import { createContext, useContext, useRef } from 'react'
 import { useLocalObservable } from 'mobx-react-lite'
 import { NodeType } from './Node'
 import { WireType } from './Wire'
