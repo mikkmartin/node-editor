@@ -41,7 +41,7 @@ export const Socket = ({
   }
 
   const handlePanStart = () => {
-    handleWireStart(id, node.x + x + circleX, node.y + y + circleY)
+    if (!isInput) handleWireStart(id, node.x + x + circleX, node.y + y + circleY)
   }
 
   const handlePanDrag = (_, info: PanInfo) => {
@@ -49,7 +49,8 @@ export const Socket = ({
   }
 
   const handleHoverStart = () => {
-    if (connecting && type === 'input' && source) setWireTarget(id)
+    const targetingSelf = node.outputs.some(output => output.id === source)
+    if (connecting && isInput && !targetingSelf) setWireTarget(id)
   }
 
   const handleHoverEnd = () => {
