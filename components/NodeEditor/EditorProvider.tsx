@@ -208,7 +208,10 @@ export const EditorProvider = ({ children, nodes, wires }) => {
                 })
                 .includes(target)
             )
-            if (targetNode) store.computeOutputs(targetNode)
+            if (targetNode) {
+              store.computeOutputs(targetNode)
+              store.updateDependancies(targetNode)
+            }
           }
         }
         store.drawWire = null
