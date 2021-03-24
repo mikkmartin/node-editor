@@ -116,8 +116,8 @@ export const EditorProvider = ({ children, nodes, wires }) => {
       },
       updateDependancies(node) {
         const outputWires: WireType[] = node.outputs.reduce((all, output) => {
-          const connected = store.wires.find(wire => wire.source === output.id)
-          if (connected) return [...all, connected]
+          const connected = store.wires.filter(wire => wire.source === output.id)
+          if (connected) return [...all, ...connected]
           else return all
         }, [] as WireType[])
 
