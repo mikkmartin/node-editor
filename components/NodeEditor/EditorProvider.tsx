@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react'
+import { createContext, useContext, useLayoutEffect, useRef } from 'react'
 import { useLocalObservable } from 'mobx-react-lite'
 import { NodeType } from './Node'
 import { WireType } from './Wire'
@@ -224,6 +224,18 @@ export const EditorProvider = ({ children, nodes, wires }) => {
       },
     })
   )
+
+  const initialRender = useRef(true)
+  if (initialRender.current)
+    store.nodes
+      .filter(
+        node => !store.wires.find(wire => node.inputs.map(({ id }) => id).includes(wire.target))
+      )
+      .map(node => {
+        store.computeOutputs(node)
+        store.updateDependancies(node)
+      })
+  else initialRender.current = false
 
   return <Context.Provider value={store}>{children}</Context.Provider>
 }
