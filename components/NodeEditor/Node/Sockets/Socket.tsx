@@ -11,8 +11,7 @@ export interface SocketProps {
   type: 'input' | 'output'
   nodeType: NodeType
   value: any
-  source?: string
-  target?: string
+  source?: string | null
   connecting?: boolean
 }
 
@@ -25,7 +24,6 @@ export const Socket = ({
   value,
   connecting = false,
   source,
-  target,
 }: SocketProps) => {
   const { handleWireStart, handleWireMove, handleWireEnd, setWireTarget, ...node } = useNode()
   const y = 22 + nth * 14
@@ -55,8 +53,7 @@ export const Socket = ({
   }
 
   const handleHoverEnd = () => {
-    target
-    target = undefined
+    setWireTarget(null)
   }
 
   return (
@@ -66,7 +63,7 @@ export const Socket = ({
         onTapStart={ev => ev.stopPropagation()}
         onPanStart={handlePanStart}
         onPan={handlePanDrag}
-        onPanEnd={() => handleWireEnd}>
+        onPanEnd={() => handleWireEnd()}>
         <rect fill="rgba(0,0,0,0.0)" width="14" height="14" />
         <circle cx={circleX} cy={circleY} r="2" fill="gray" />
         <motion.circle

@@ -25,8 +25,7 @@ export const Sockets = () => {
                 value={socket.value}
                 type="input"
                 connecting={Boolean(store.drawWire)}
-                source={store.drawWire?.source}
-                target={store.drawWire?.target}
+                source={store.drawWire?.source || null}
                 nodeType={type}
                 nth={i}
                 width={width}

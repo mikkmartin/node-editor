@@ -9,17 +9,17 @@ import { nanoid } from 'nanoid'
 export type Point2D = { x: number; y: number }
 export type SetInput = (action: { nodeId: string; socketId: string; value: any }) => void
 export interface WireEvents {
-  setWireTarget: (id: string) => void
+  setWireTarget: (target: string | null) => void
   handleWireStart: (id: string, x: number, y: number) => void
   handleWireMove: (x: number, y: number) => void
-  handleWireEnd: (id: string) => void
+  handleWireEnd: () => void
 }
 interface IStore extends WireEvents {
   nodes: NodeType[]
   wires: WireType[]
   drawWire: null | {
-    source?: string
-    target?: string
+    source?: string | null
+    target?: string | null
     start: Point2D
     end: Point2D
   }
