@@ -29,7 +29,7 @@ export const Socket = ({
   const y = 22 + nth * 14
   const isInput = type === 'input'
   const x = isInput ? 0 : width - 15
-  const hideInput = nodeType === 'number' && !isInput
+  const hideInputField = nodeType === 'number' && !isInput
   const circleX = isInput ? 6 : 9
   const circleY = 7
 
@@ -78,7 +78,7 @@ export const Socket = ({
           stroke="rgba(255,255,255,0)"
         />
       </motion.g>
-      {!hideInput && (
+      {!hideInputField && (
         <Input
           x={inputX}
           value={value}

@@ -3,6 +3,7 @@ import { ISocket } from '../Sockets'
 import { add } from './add'
 import { number } from './number'
 import { output } from './output'
+import { input } from './input'
 
 export type NodeType = 'number' | 'add' | 'substract' | 'multiply' | 'divide' | 'input' | 'output'
 
@@ -50,6 +51,9 @@ export const getNodeProps = (initialProps: NodeInitialProps): Node => {
       break
     case 'number':
       props = number(initialProps)
+      break
+    case 'input':
+      props = input(initialProps)
       break
     case 'output':
       props = output(initialProps)

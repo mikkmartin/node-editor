@@ -5,7 +5,6 @@ import styled from 'styled-components'
 import { useStore } from './EditorProvider'
 import { Node } from './Node'
 import { DragWire, ConnectedWire } from './Wire'
-import { Debugger } from './Debugger'
 import { FilterDefs } from './FilterDefs'
 import { Selector } from './Selector'
 import { observer } from 'mobx-react-lite'
@@ -44,7 +43,6 @@ export const Canvas = observer<Props>(({ onUpdate }) => {
         <ConnectedWire key={props.id} {...props} />
       ))}
       <DragWire />
-      <Debugger />
       <FilterDefs />
       <Selector />
     </Container>

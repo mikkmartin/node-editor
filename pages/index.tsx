@@ -2,6 +2,8 @@ import NodeEditor from 'components/NodeEditor'
 import { useState } from 'react'
 import styled from 'styled-components'
 import { calculateOutputs } from 'utils/calculateOutputs'
+import { JSONInput } from 'components/JSONInput'
+import { JSONOutput } from 'components/JSONOutput'
 
 export default function Home() {
   const [output, setOutput] = useState({})
@@ -9,6 +11,7 @@ export default function Home() {
   const elements = [
     { type: 'number', id: '1', inputs: [5] },
     { type: 'number', id: '2' },
+    { type: 'input', id: '0', inputs: [20] },
     { type: 'add', x: 100, y: 20, id: '3', inputs: [0, 0, 2] },
     { type: 'add', x: 200, y: 20, id: '4' },
     { type: 'number', x: 300, y: 20, id: '5' },
@@ -22,6 +25,7 @@ export default function Home() {
   ]
 
   const handleUpdate = (nodes, wires) => {
+    console.log({ nodes, wires })
     calculateOutputs(nodes, wires)
     const outPutNodes = nodes
       .filter(node => node.type === 'output')
@@ -31,9 +35,9 @@ export default function Home() {
 
   return (
     <Container>
-      <textarea defaultValue={JSON.stringify({}, null, 2)} />
+      <JSONInput />
       <NodeEditor onUpdate={handleUpdate} elements={elements} />
-      <pre>{JSON.stringify(output, null, 2)}</pre>
+      <JSONOutput />
     </Container>
   )
 }
@@ -43,15 +47,4 @@ const Container = styled.div`
   background: #222;
   color: white;
   font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-  textarea {
-    width: 30vw;
-    background: none;
-    border: none;
-    color: inherit;
-    resize: none;
-    font-size: 12px;
-  }
-  pre {
-    width: 30vw;
-  }
 `

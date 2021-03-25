@@ -10,10 +10,10 @@ export interface ISocket {
 
 export const Sockets = () => {
   const store = useStore()
-  const { inputs, outputs, width, type, hideOutput } = useNode()
+  const { inputs, outputs, width, type, hideOutput, hideInput } = useNode()
   return (
     <>
-      {inputs.map((input, i) => (
+      {!hideInput && inputs.map((input, i) => (
         <Observer
           key={input.id}
           render={() => {
