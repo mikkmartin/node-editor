@@ -6,12 +6,17 @@ import { JSONInput } from 'components/JSONInput'
 import { JSONOutput } from 'components/JSONOutput'
 
 export default function Home() {
-  const [output, setOutput] = useState({})
+  const inputs = { someVal: 20 }
+  const inputNodes = Object.entries(inputs).map(([name, input], id) => ({
+    type: 'input',
+    id,
+    inputs: [input],
+  }))
 
   const elements = [
     { type: 'number', id: '1', inputs: [5] },
     { type: 'number', id: '2' },
-    { type: 'input', id: '0', inputs: [20] },
+    ...inputNodes,
     { type: 'add', x: 100, y: 20, id: '3', inputs: [0, 0, 2] },
     { type: 'add', x: 200, y: 20, id: '4' },
     { type: 'number', x: 300, y: 20, id: '5' },
@@ -25,17 +30,17 @@ export default function Home() {
   ]
 
   const handleUpdate = (nodes, wires) => {
-    console.log({ nodes, wires })
+    //console.log({ nodes, wires })
     calculateOutputs(nodes, wires)
     const outPutNodes = nodes
       .filter(node => node.type === 'output')
       .map(({ type, outputs }) => ({ name: type, value: outputs[0].value }))
-    setOutput(outPutNodes)
+    //console.log(outPutNodes)
   }
 
   return (
     <Container>
-      <JSONInput />
+      <JSONInput val={inputs} />
       <NodeEditor onUpdate={handleUpdate} elements={elements} />
       <JSONOutput />
     </Container>

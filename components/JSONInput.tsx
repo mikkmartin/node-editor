@@ -1,24 +1,34 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, FC } from 'react'
 import styled from 'styled-components'
 
-export const JSONInput = () => {
-  const initial = { someVal: 12 }
-  const [text, setText] = useState(JSON.stringify(initial, null, 2))
-  const [json, setJson] = useState(initial)
+type Props = {
+  val?: { [key: string]: any }
+}
+export const JSONInput: FC<Props> = ({ val = { someVal: 12 } }) => {
+  const [text, setText] = useState(JSON.stringify(val, null, 2))
+  const [json, setJson] = useState(val)
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    console.log(text)
+    try {
+      const _json = JSON.parse(text)
+      console.log(_json)
+      setJson(_json)
+      setError('')
+    } catch (e) {
+      setError(e)
+    }
   }, [text])
 
   return (
-    <Container>
+    <Container error={error}>
       <pre>Inputs</pre>
-      <textarea value={JSON.stringify(json, null, 2)} onChange={ev => setText(ev.target.value)} />
+      <textarea value={text} onChange={ev => setText(ev.target.value)} />
     </Container>
   )
 }
 
-const Container = styled.div`
+const Container = styled.div<{ error: any }>`
   width: 30vw;
   position: relative;
   pre {
@@ -40,11 +50,15 @@ const Container = styled.div`
     width: 100%;
     height: 100%;
     border: none;
-    outline: none;
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: -1px;
+    outline-color: ${p => (Boolean(p.error) ? 'red' : 'transparent')};
     &:hover {
       color: rgba(180, 180, 180, 1);
     }
     &:focus {
+      outline-color: ${p => (Boolean(p.error) ? 'red' : '#66b62e')};
       color: white;
     }
   }
