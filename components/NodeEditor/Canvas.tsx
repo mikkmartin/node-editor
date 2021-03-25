@@ -9,6 +9,7 @@ import { Debugger } from './Debugger'
 import { FilterDefs } from './FilterDefs'
 import { Selector } from './Selector'
 import { observer } from 'mobx-react-lite'
+import { autorun } from 'mobx'
 import { useEffect } from 'react'
 
 type Props = {
@@ -25,9 +26,7 @@ export const Canvas = observer<Props>(({ onUpdate }) => {
     wires,
   } = useStore()
 
-  useEffect(() => {
-    onUpdate(nodes, wires)
-  }, [nodes.length, wires.length])
+  useEffect(() => autorun(() => onUpdate(nodes, wires)), [])
 
   return (
     <Container

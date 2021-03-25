@@ -2,8 +2,9 @@ import { nanoid } from 'nanoid'
 import { ISocket } from '../Sockets'
 import { add } from './add'
 import { number } from './number'
+import { output } from './output'
 
-export type NodeType = 'number' | 'add' | 'substract' | 'multiply' | 'divide'
+export type NodeType = 'number' | 'add' | 'substract' | 'multiply' | 'divide' | 'input' | 'output'
 
 export interface NodeInitialProps {
   id?: string
@@ -11,6 +12,7 @@ export interface NodeInitialProps {
   x?: number
   y?: number
   inputs?: any[]
+  color?: string
 }
 
 export interface NodeProps {
@@ -18,6 +20,9 @@ export interface NodeProps {
   compute?: (inputs: ISocket[], outputs: ISocket[]) => ISocket[]
   inputs: ISocket[]
   outputs: ISocket[]
+  color?: string
+  hideOutput?: boolean
+  hideInput?: boolean
 }
 
 export interface Node extends NodeProps {
@@ -35,6 +40,7 @@ export const getNodeProps = (initialProps: NodeInitialProps): Node => {
     id: initialProps.id || nanoid(),
     x: initialProps.x || 20,
     y: initialProps.y || runningY,
+    color: initialProps.color || '#4c4c4c',
   }
 
   let props
@@ -44,6 +50,9 @@ export const getNodeProps = (initialProps: NodeInitialProps): Node => {
       break
     case 'number':
       props = number(initialProps)
+      break
+    case 'output':
+      props = output(initialProps)
       break
     default:
       console.warn(`Node type of '${initialProps.type}' not recognized.`)

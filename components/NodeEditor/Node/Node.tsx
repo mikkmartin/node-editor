@@ -40,7 +40,7 @@ export const Node = ({ id }: INode) => {
         }
         return (
           <NodeProvider id={id}>
-            <Container
+            <motion.g
               onTapStart={ev => handleTapStart(ev, id, selected)}
               onPan={(ev, info) => handlePan(ev, info, true)}
               onPanEnd={handlePanEnd}
@@ -48,13 +48,9 @@ export const Node = ({ id }: INode) => {
               <Background />
               <Label />
               <Sockets />
-            </Container>
+            </motion.g>
           </NodeProvider>
         )
       }}></Observer>
   )
 }
-
-const Container = styled(motion.g)`
-  fill: #4c4c4c;
-`

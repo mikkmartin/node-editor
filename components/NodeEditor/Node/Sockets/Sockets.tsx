@@ -10,7 +10,7 @@ export interface ISocket {
 
 export const Sockets = () => {
   const store = useStore()
-  const { inputs, outputs, width, type } = useNode()
+  const { inputs, outputs, width, type, hideOutput } = useNode()
   return (
     <>
       {inputs.map((input, i) => (
@@ -34,7 +34,7 @@ export const Sockets = () => {
           }}
         />
       ))}
-      {outputs.map((output, i) => (
+      {!hideOutput && outputs.map((output, i) => (
         <Observer
           key={output.id}
           render={() => {

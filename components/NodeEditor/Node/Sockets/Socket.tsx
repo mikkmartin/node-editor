@@ -66,7 +66,7 @@ export const Socket = ({
         onPan={handlePanDrag}
         onPanEnd={() => handleWireEnd()}>
         <rect fill="rgba(0,0,0,0.0)" width="14" height="14" />
-        <circle cx={circleX} cy={circleY} r="2" fill="gray" />
+        <circle cx={circleX} cy={circleY} r="2" fill="rgba(255, 255, 255, 0.35)" />
         <motion.circle
           variants={{ hover: { stroke: 'rgba(255,255,255,0.35)', transition: { duration: 0 } } }}
           transition={{ duration: 0.2 }}
