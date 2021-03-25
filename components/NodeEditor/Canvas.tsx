@@ -1,3 +1,5 @@
+import { NodeType } from './Node'
+import { WireType } from './Wire'
 import { motion } from 'framer-motion'
 import styled from 'styled-components'
 import { useStore } from './EditorProvider'
@@ -6,48 +8,49 @@ import { DragWire, ConnectedWire } from './Wire'
 import { Debugger } from './Debugger'
 import { FilterDefs } from './FilterDefs'
 import { Selector } from './Selector'
-import { Observer } from 'mobx-react-lite'
+import { observer } from 'mobx-react-lite'
+import { useEffect } from 'react'
 
-export const Canvas = () => {
-  const store = useStore()
+type Props = {
+  onUpdate: (nodes: NodeType[], wires: WireType[]) => void
+}
+export const Canvas = observer<Props>(({ onUpdate }) => {
+  const {
+    handlePan,
+    handlePanEnd,
+    handlePanStart,
+    handleTap,
+    handleTapCancel,
+    nodes,
+    wires,
+  } = useStore()
+
+  useEffect(() => {
+    onUpdate(nodes, wires)
+  }, [nodes.length, wires.length])
 
   return (
-    <Observer
-      render={() => {
-        const {
-          handlePan,
-          handlePanEnd,
-          handlePanStart,
-          handleTap,
-          handleTapCancel,
-          nodes,
-          wires,
-        } = store
-        return (
-          <Container
-            onPanStart={handlePanStart}
-            onPan={handlePan}
-            onPanEnd={handlePanEnd}
-            onTap={handleTap}
-            onTapCancel={handleTapCancel}
-            width="100vw"
-            height="100vh">
-            {nodes.map(props => (
-              <Node key={props.id} {...props} />
-            ))}
-            {wires.map(props => (
-              <ConnectedWire key={props.id} {...props} />
-            ))}
-            <DragWire />
-            <Debugger />
-            <FilterDefs />
-            <Selector />
-          </Container>
-        )
-      }}
-    />
+    <Container
+      onPanStart={handlePanStart}
+      onPan={handlePan}
+      onPanEnd={handlePanEnd}
+      onTap={handleTap}
+      onTapCancel={handleTapCancel}
+      width="100vw"
+      height="100vh">
+      {nodes.map(props => (
+        <Node key={props.id} {...props} />
+      ))}
+      {wires.map(props => (
+        <ConnectedWire key={props.id} {...props} />
+      ))}
+      <DragWire />
+      <Debugger />
+      <FilterDefs />
+      <Selector />
+    </Container>
   )
-}
+})
 
 const Container = styled(motion.svg)`
   --highlight: orange;

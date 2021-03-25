@@ -3,10 +3,11 @@ import { EditorProvider } from './EditorProvider'
 import { getNodeProps } from './Node/nodeTypes'
 import { initiateWire } from './Wire/mapWire'
 
-export const NodeEditor = ({ elements }) => {
+export const NodeEditor = ({ elements, onUpdate }) => {
+  
   return (
     <EditorProvider {...getInitialElements(elements)}>
-      <Canvas />
+      <Canvas onUpdate={onUpdate} />
     </EditorProvider>
   )
 }

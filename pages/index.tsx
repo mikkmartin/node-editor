@@ -1,4 +1,6 @@
 import NodeEditor from 'components/NodeEditor'
+import styled from 'styled-components'
+import { calculateOutputs } from 'utils/calculateOutputs'
 
 export default function Home() {
   const elements = [
@@ -12,5 +14,43 @@ export default function Home() {
     { source: '3', target: '4' },
     { source: '4', target: '5' },
   ]
-  return <NodeEditor elements={elements} />
+
+  const handleUpdate = (nodes, wires) => {
+    calculateOutputs(nodes, wires)
+    /*
+    setCalculation(query => {
+      return {
+        query,
+        nodes: nodes.length,
+        wires: wires.length,
+      }
+    })
+    */
+  }
+
+  return (
+    <Container>
+      <textarea defaultValue={JSON.stringify({}, null, 2)} />
+      <NodeEditor onUpdate={handleUpdate} elements={elements} />
+      <pre>{JSON.stringify({}, null, 2)}</pre>
+    </Container>
+  )
 }
+
+const Container = styled.div`
+  display: flex;
+  background: #222;
+  color: white;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  textarea {
+    width: 30vw;
+    background: none;
+    border: none;
+    color: inherit;
+    resize: none;
+    font-size: 12px;
+  }
+  pre {
+    width: 30vw;
+  }
+`
