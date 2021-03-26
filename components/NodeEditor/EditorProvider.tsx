@@ -31,6 +31,13 @@ interface IStore extends WireEvents {
     dragging: boolean
     box: null | Box2D
   }
+  dropdown: {
+    open: boolean
+    top: number
+    left: number
+  }
+  openDropdown: (top: number, left: number) => void
+  closeDropdown: () => void
   getWireProps: (id: string) => { source: Point2D; target: Point2D; active: boolean }
   computeOutputs: (node: NodeType) => void
   updateDependancies: (node: NodeType) => void
@@ -73,6 +80,21 @@ export const EditorProvider: FC<Props> = ({ children, nodes, wires, onLoad }) =>
         dragging: false,
         panning: false,
         box: null,
+      },
+      dropdown: {
+        open: false,
+        top: 0,
+        left: 0,
+      },
+      openDropdown(top, left) {
+        store.dropdown = {
+          open: true,
+          top,
+          left,
+        }
+      },
+      closeDropdown() {
+        store.dropdown.open = false
       },
       getWireProps(id) {
         const wire = store.wires.find(w => w.id === id)

@@ -3,9 +3,18 @@ import styled from 'styled-components'
 import { calculateOutputs } from 'utils/calculateOutputs'
 import { JSONInput } from 'components/JSONInput'
 import { JSONOutput } from 'components/JSONOutput'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
+import { DropdownMenu } from 'components/ui/DropdownMenu'
+
+type NewNodePos = null | {
+  top: number
+  left: number
+  x: number
+  y: number
+}
 
 export default function Home() {
+  const [newNodePos, setNewNodePos] = useState<NewNodePos>(null)
   const instance = useRef<EditorInstance>()
   const handleUpdate = (nodes, wires) => {
     //console.log({ nodes, wires })
@@ -21,13 +30,18 @@ export default function Home() {
   }
 
   const handleDoubleClick = ev => {
-    if (!instance.current) return
     const { clientX, clientY } = ev
     const { x: offsetX, y: offsetY } = ev.target.getBoundingClientRect()
     const x = Math.round(clientX - offsetX)
     const y = Math.round(clientY - offsetY)
+    setNewNodePos({ left: clientX, top: clientY, x, y })
+  }
 
-    instance.current.addNode({ type: 'number', x, y })
+  const addNode = type => {
+    if (!instance.current || !newNodePos) return
+    const { x, y } = newNodePos
+    instance.current.addNode({ type, x, y })
+    setNewNodePos(null)
   }
 
   return (
@@ -40,6 +54,20 @@ export default function Home() {
         onDoubleClick={handleDoubleClick}
       />
       <JSONOutput />
+      <DropdownMenu
+        open={Boolean(newNodePos)}
+        onClose={() => setNewNodePos(null)}
+        pos={
+          Boolean(newNodePos)
+            ? { top: newNodePos?.top, left: newNodePos?.left }
+            : { top: 0, left: 0 }
+        }>
+        {['number', 'add', 'input', 'output'].map(v => (
+          <p key={v} onClick={() => addNode(v)}>
+            {v}
+          </p>
+        ))}
+      </DropdownMenu>
     </Container>
   )
 }
