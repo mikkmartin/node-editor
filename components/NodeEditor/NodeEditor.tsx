@@ -1,14 +1,22 @@
-import { useMemo } from 'react'
+import { FC, useMemo } from 'react'
 import { Canvas } from './Canvas'
-import { EditorProvider } from './EditorProvider'
+import { EditorProvider, EditorInstance } from './EditorProvider'
 import { getNodeProps } from './Node/nodeTypes'
 import { initiateWire } from './Wire/mapWire'
 
-export const NodeEditor = ({ elements, onUpdate }) => {
+interface INodeEditor {
+  elements: any
+  onUpdate: (nodes, wires) => void
+  onClick?: (ev) => void
+  onDoubleClick?: (ev) => void
+  onLoad?: (instance: EditorInstance) => void
+}
+
+export const NodeEditor: FC<INodeEditor> = ({ elements, onLoad, ...rest }) => {
   return useMemo(
     () => (
-      <EditorProvider {...getInitialElements(elements)}>
-        <Canvas onUpdate={onUpdate} />
+      <EditorProvider {...getInitialElements(elements)} onLoad={onLoad}>
+        <Canvas {...rest} />
       </EditorProvider>
     ),
     []

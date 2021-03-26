@@ -1,6 +1,7 @@
-import { createContext, useContext, useRef } from 'react'
+import { createContext, useContext, useRef, FC } from 'react'
 import { useLocalObservable } from 'mobx-react-lite'
 import { NodeType } from './Node'
+import { NodeInitialProps, getNodeProps } from './Node/nodeTypes'
 import { WireType } from './Wire'
 import { PanInfo, TapInfo } from 'framer-motion'
 import { Box2D, getBox } from './Selector'
@@ -48,10 +49,18 @@ interface IStore extends WireEvents {
   setBox: (box: null | Box2D) => void
 }
 
+export interface EditorInstance {
+  addNode: (node: NodeInitialProps) => void
+}
+
 //@ts-ignore
 const Context = createContext<IStore>()
 
-export const EditorProvider = ({ children, nodes, wires }) => {
+type Props = {
+  onLoad?: (instance: EditorInstance) => void
+  [key: string]: any
+}
+export const EditorProvider: FC<Props> = ({ children, nodes, wires, onLoad }) => {
   const store = useLocalObservable(
     (): IStore => ({
       nodes,
@@ -245,8 +254,7 @@ export const EditorProvider = ({ children, nodes, wires }) => {
     })
   )
 
-  const initialRender = useRef(true)
-  if (initialRender.current)
+  const onInitialRender = () => {
     store.nodes
       .filter(
         node => !store.wires.find(wire => node.inputs.map(({ id }) => id).includes(wire.target))
@@ -255,6 +263,17 @@ export const EditorProvider = ({ children, nodes, wires }) => {
         store.computeOutputs(node)
         store.updateDependancies(node)
       })
+    if (onLoad) {
+      onLoad({
+        addNode: props => {
+          store.nodes.push(getNodeProps(props))
+        },
+      })
+    }
+  }
+
+  const initialRender = useRef(true)
+  if (initialRender.current) onInitialRender()
   else initialRender.current = false
 
   return <Context.Provider value={store}>{children}</Context.Provider>

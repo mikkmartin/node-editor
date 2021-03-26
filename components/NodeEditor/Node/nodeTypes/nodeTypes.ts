@@ -32,6 +32,7 @@ export interface Node extends NodeProps {
   x: number
   y: number
   height: number
+  selected: boolean
 }
 
 let runningY = 20
@@ -42,6 +43,7 @@ export const getNodeProps = (initialProps: NodeInitialProps): Node => {
     x: initialProps.x || 20,
     y: initialProps.y || runningY,
     color: initialProps.color || '#4c4c4c',
+    selected: false,
   }
 
   let props

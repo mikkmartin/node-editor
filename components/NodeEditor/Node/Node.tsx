@@ -3,15 +3,10 @@ import { Observer } from 'mobx-react-lite'
 import { useStore } from '../EditorProvider'
 import { Label } from './Label'
 import Sockets from './Sockets'
-import styled from 'styled-components'
-import { Node as PureNode } from './nodeTypes'
+import { Node as INode } from './nodeTypes'
 import { NodeProvider } from './NodeProvider'
 import { Background } from './Background'
 export type { NodeType } from './nodeTypes'
-
-export interface INode extends PureNode {
-  selected: boolean
-}
 
 export const Node = ({ id }: INode) => {
   const { drag, getNode, select, deselect, deselectAll, handlePan, handlePanEnd } = useStore()

@@ -13,8 +13,10 @@ import { useEffect } from 'react'
 
 type Props = {
   onUpdate: (nodes: NodeType[], wires: WireType[]) => void
+  onClick?: (ev) => void
+  onDoubleClick?: (ev) => void
 }
-export const Canvas = observer<Props>(({ onUpdate }) => {
+export const Canvas = observer<Props>(({ onUpdate, onClick, onDoubleClick }) => {
   const {
     handlePan,
     handlePanEnd,
@@ -34,6 +36,8 @@ export const Canvas = observer<Props>(({ onUpdate }) => {
       onPanEnd={handlePanEnd}
       onTap={handleTap}
       onTapCancel={handleTapCancel}
+      onClick={onClick}
+      onDoubleClick={onDoubleClick}
       width="100vw"
       height="100vh">
       {nodes.map(props => (

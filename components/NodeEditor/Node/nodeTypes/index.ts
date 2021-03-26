@@ -1,2 +1,2 @@
 export { getNodeProps } from './nodeTypes'
-export type { Node, NodeInitialProps as NodeProps, NodeType } from './nodeTypes'
+export type { Node, NodeInitialProps, NodeType } from './nodeTypes'
