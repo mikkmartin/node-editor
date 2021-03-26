@@ -19,13 +19,15 @@ export default function Home() {
   const handleUpdate = (nodes, wires) => {
     //console.log({ nodes, wires })
     calculateOutputs(nodes, wires)
+    /*
     const outPutNodes = nodes
       .filter(node => node.type === 'output')
       .map(({ type, outputs }) => ({ name: type, value: outputs[0].value }))
+      */
     //console.log(outPutNodes)
   }
 
-  const handleJsonUpdate = (...args) => {
+  const handleJsonUpdate = () => {
     //console.log(args)
   }
 
@@ -73,7 +75,7 @@ export default function Home() {
 }
 
 const inputs = { someVal: 20 }
-const inputNodes = Object.entries(inputs).map(([name, input], id) => ({
+const inputNodes = Object.entries(inputs).map(([, input], id) => ({
   type: 'input',
   id,
   inputs: [input],

@@ -1,8 +1,8 @@
 import { createContext, FC, useContext } from 'react'
 import { useStore, WireEvents } from '../EditorProvider'
-import { INode } from './Node'
+import { Node } from './nodeTypes'
 
-interface Props extends INode, WireEvents {
+interface Props extends Node, WireEvents {
   setInput: (action: { id: string; value: any }) => void
 }
 

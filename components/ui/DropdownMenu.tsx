@@ -1,5 +1,4 @@
 import Popover from '@material-ui/core/Popover'
-import MenuItem from '@material-ui/core/MenuItem'
 import styled from 'styled-components'
 
 export const DropdownMenu = ({ children, open, onClose, pos }) => {
