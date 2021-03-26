@@ -1,5 +1,4 @@
 import NodeEditor from 'components/NodeEditor'
-import { useState } from 'react'
 import styled from 'styled-components'
 import { calculateOutputs } from 'utils/calculateOutputs'
 import { JSONInput } from 'components/JSONInput'
@@ -38,9 +37,13 @@ export default function Home() {
     //console.log(outPutNodes)
   }
 
+  const handleJsonUpte = (...args) => {
+    console.log(args)
+  }
+
   return (
     <Container>
-      <JSONInput initialInputs={inputs} />
+      <JSONInput onUpdate={handleJsonUpte} initialInputs={inputs} />
       <NodeEditor onUpdate={handleUpdate} elements={elements} />
       <JSONOutput />
     </Container>

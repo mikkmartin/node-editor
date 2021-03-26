@@ -1,14 +1,17 @@
+import { useMemo } from 'react'
 import { Canvas } from './Canvas'
 import { EditorProvider } from './EditorProvider'
 import { getNodeProps } from './Node/nodeTypes'
 import { initiateWire } from './Wire/mapWire'
 
 export const NodeEditor = ({ elements, onUpdate }) => {
-  
-  return (
-    <EditorProvider {...getInitialElements(elements)}>
-      <Canvas onUpdate={onUpdate} />
-    </EditorProvider>
+  return useMemo(
+    () => (
+      <EditorProvider {...getInitialElements(elements)}>
+        <Canvas onUpdate={onUpdate} />
+      </EditorProvider>
+    ),
+    []
   )
 }
 
