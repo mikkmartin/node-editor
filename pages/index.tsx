@@ -40,7 +40,7 @@ export default function Home() {
 
   return (
     <Container>
-      <JSONInput val={inputs} />
+      <JSONInput initialInputs={inputs} />
       <NodeEditor onUpdate={handleUpdate} elements={elements} />
       <JSONOutput />
     </Container>

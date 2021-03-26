@@ -2,18 +2,19 @@ import { useEffect, useState, FC } from 'react'
 import styled from 'styled-components'
 
 type Props = {
-  val?: { [key: string]: any }
+  initialInputs?: { [key: string]: any }
+  onUpdate?: (json: object) => void
 }
-export const JSONInput: FC<Props> = ({ val = { someVal: 12 } }) => {
-  const [text, setText] = useState(JSON.stringify(val, null, 2))
-  const [json, setJson] = useState(val)
+export const JSONInput: FC<Props> = ({ initialInputs = { someVal: 12 }, onUpdate = () => {} }) => {
+  const [text, setText] = useState(JSON.stringify(initialInputs, null, 2))
+  const [, setJson] = useState(initialInputs)
   const [error, setError] = useState('')
 
   useEffect(() => {
     try {
       const _json = JSON.parse(text)
-      console.log(_json)
       setJson(_json)
+      onUpdate(_json)
       setError('')
     } catch (e) {
       setError(e)
