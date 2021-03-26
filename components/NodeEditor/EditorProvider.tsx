@@ -1,4 +1,4 @@
-import { createContext, useContext, useRef, FC } from 'react'
+import { createContext, useContext, useRef, FC, useEffect } from 'react'
 import { useLocalObservable } from 'mobx-react-lite'
 import { NodeType } from './Node'
 import { NodeInitialProps, getNodeProps } from './Node/nodeTypes'
@@ -47,6 +47,7 @@ interface IStore extends WireEvents {
   updatePositions: () => void
   deselectAll: () => void
   setBox: (box: null | Box2D) => void
+  deleteSelected: () => void
 }
 
 export interface EditorInstance {
@@ -251,6 +252,17 @@ export const EditorProvider: FC<Props> = ({ children, nodes, wires, onLoad }) =>
       setBox(box: null | Box2D) {
         store.drag.box = box
       },
+      deleteSelected: () => {
+        const selectedNodes = store.nodes.filter(n => n.selected)
+        const selectedNodeSockets = selectedNodes.reduce<string[]>(
+          (all, node) => [...all, ...node.inputs.map(n => n.id), ...node.outputs.map(n => n.id)],
+          []
+        )
+        store.wires = store.wires.filter(
+          w => !(selectedNodeSockets.includes(w.source) || selectedNodeSockets.includes(w.target))
+        )
+        store.nodes = store.nodes.filter(n => !n.selected)
+      },
     })
   )
 
@@ -275,6 +287,19 @@ export const EditorProvider: FC<Props> = ({ children, nodes, wires, onLoad }) =>
   const initialRender = useRef(true)
   if (initialRender.current) onInitialRender()
   else initialRender.current = false
+
+  useEffect(() => {
+    const keyCombination = (ev: KeyboardEvent) => {
+      switch (ev.key) {
+        case 'Backspace':
+        case 'Delete':
+          return store.deleteSelected()
+      }
+    }
+
+    document.addEventListener('keydown', keyCombination)
+    return () => document.removeEventListener('keydown', keyCombination)
+  }, [])
 
   return <Context.Provider value={store}>{children}</Context.Provider>
 }
