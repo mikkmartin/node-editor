@@ -36,7 +36,7 @@ export interface Node extends NodeProps {
 }
 
 let runningY = 20
-export const getNodeProps = (initialProps: NodeInitialProps, i: number): Node => {
+export const getNodeProps = (initialProps: NodeInitialProps, i?: number): Node => {
   if (i === 0) runningY = 20
   const defaults = {
     type: initialProps.type,

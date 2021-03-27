@@ -10,6 +10,7 @@ import { Selector } from './Selector'
 import { observer } from 'mobx-react-lite'
 import { autorun } from 'mobx'
 import { useEffect } from 'react'
+import { AnimatePresence } from 'framer-motion'
 
 type Props = {
   onUpdate: (nodes: NodeType[], wires: WireType[]) => void
@@ -40,9 +41,11 @@ export const Canvas = observer<Props>(({ onUpdate, onClick, onDoubleClick }) => 
       onDoubleClick={onDoubleClick}
       width="100vw"
       height="100vh">
-      {nodes.map(props => (
-        <Node key={props.id} {...props} />
-      ))}
+      <AnimatePresence initial={false}>
+        {nodes.map(props => (
+          <Node key={props.id} {...props} />
+        ))}
+      </AnimatePresence>
       {wires.map(props => (
         <ConnectedWire key={props.id} {...props} />
       ))}
