@@ -1,5 +1,3 @@
-import { NodeType } from './Node'
-import { WireType } from './Wire'
 import { motion } from 'framer-motion'
 import styled from 'styled-components'
 import { useStore } from './EditorProvider'

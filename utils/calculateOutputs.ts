@@ -31,4 +31,5 @@ const getCalculations = (types: NodeType[]): { type: string; calc: Function }[] 
 
 export const calculateOutputs = (nodes: INode[], wires: IWire[]) => {
   const calculations = getCalculations(nodes.map(node => node.type))
+  console.log(calculations, wires)
 }

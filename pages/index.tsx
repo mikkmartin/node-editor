@@ -5,7 +5,6 @@ import { JSONInput } from 'components/JSONInput'
 import { JSONOutput } from 'components/JSONOutput'
 import { useRef, useState } from 'react'
 import { DropdownMenu } from 'components/ui/DropdownMenu'
-import { isArray } from 'node:util'
 
 type NewNodePos = null | {
   top: number
