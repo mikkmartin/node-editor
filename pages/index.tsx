@@ -5,6 +5,7 @@ import { JSONInput } from 'components/JSONInput'
 import { JSONOutput } from 'components/JSONOutput'
 import { useRef, useState } from 'react'
 import { DropdownMenu } from 'components/ui/DropdownMenu'
+import { isArray } from 'node:util'
 
 type NewNodePos = null | {
   top: number
@@ -75,12 +76,22 @@ export default function Home() {
   )
 }
 
-const inputs = { someVal: 20, someOtherValue: 30 }
-const inputNodes = Object.entries(inputs).map(([name, input]) => ({
-  type: 'input',
-  id: name,
-  inputs: [input],
-}))
+const inputs = {
+  title: 'Hello',
+  regNr: 12702285,
+  items: [
+    { title: 'item1', price: 20 },
+    { title: 'item2', price: 9 },
+  ],
+}
+const inputNodes = Object.entries(inputs)
+  .filter(([, val]) => !Array.isArray(val))
+  .map(([name, input]) => ({
+    type: 'input',
+    id: name,
+    label: name,
+    inputs: [input],
+  }))
 
 const initialElements = [
   { type: 'number', id: '1', inputs: [5] },
@@ -102,5 +113,4 @@ const Container = styled.div`
   display: flex;
   background: #222;
   color: white;
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
 `

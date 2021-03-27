@@ -3,12 +3,12 @@ import styled from 'styled-components'
 import { useNode } from './NodeProvider'
 
 export const Label = memo(() => {
-  const { id, width, type } = useNode()
+  const { id, width, type, label } = useNode()
   return (
     <>
       <defs>
         <clipPath id={`round-corner-${id}`}>
-          <rect width={width} height="30" rx="8" ry="8" />
+          <rect width={width} height="30" rx="4" ry="4" />
         </clipPath>
       </defs>
       <rect
@@ -17,14 +17,28 @@ export const Label = memo(() => {
         width={width}
         height="20"
       />
-      <Text x={width / 2} y="14" textAnchor="middle" width={width}>
-        {type}
+      <Text height="20" textAnchor="middle" width={width}>
+        <span>{label || type}</span>
       </Text>
     </>
   )
 })
 
-const Text = styled.text`
-  font-weight: bold;
-  text-transform: capitalize;
+const Text = styled.foreignObject`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  padding: 0 4px;
+  span {
+    font-weight: bold;
+    text-transform: capitalize;
+    text-align: center;
+    font-size: 10px;
+    line-height: 20px;
+    letter-spacing: -0.5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 `

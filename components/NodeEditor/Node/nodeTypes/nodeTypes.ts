@@ -13,6 +13,7 @@ export interface NodeInitialProps {
   x?: number
   y?: number
   inputs?: any[]
+  label?: string
   color?: string
 }
 
@@ -23,6 +24,7 @@ export interface NodeProps {
   outputs: ISocket[]
   color?: string
   hideOutput?: boolean
+  label?: string
   hideInput?: boolean
 }
 
@@ -45,6 +47,7 @@ export const getNodeProps = (initialProps: NodeInitialProps, i?: number): Node =
     y: initialProps.y || runningY,
     color: initialProps.color || '#4c4c4c',
     selected: false,
+    label: initialProps.label,
   }
 
   let props
