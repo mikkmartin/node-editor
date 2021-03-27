@@ -1,7 +1,12 @@
+import { FC } from 'react'
 import styled from 'styled-components'
 
-export const JSONOutput = ({ json = { output: -1 } }) => {
-  return <Container>{JSON.stringify(json, null, 2)}</Container>
+type Props = {
+  data?: { [key: string]: any }
+}
+
+export const JSONOutput: FC<Props> = ({ data }) => {
+  return <Container>{JSON.stringify(data, null, 2)}</Container>
 }
 
 const Container = styled.pre`
@@ -13,7 +18,7 @@ const Container = styled.pre`
     top: 0;
     right: 0;
     content: 'Outputs';
-    background: #1890F1;
+    background: #1890f1;
     color: white;
     font-size: 10px;
     padding: 2px 4px;

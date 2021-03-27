@@ -1,11 +1,16 @@
 import { createContext, useContext, useRef, FC, useEffect } from 'react'
 import { useLocalObservable } from 'mobx-react-lite'
+import { reaction, toJS, configure } from 'mobx'
 import { NodeType } from './Node'
 import { NodeInitialProps, getNodeProps } from './Node/nodeTypes'
 import { WireType } from './Wire'
 import { PanInfo, TapInfo } from 'framer-motion'
 import { Box2D, getBox } from './Selector'
 import { nanoid } from 'nanoid'
+
+configure({
+  reactionRequiresObservable: false,
+})
 
 export type Point2D = { x: number; y: number }
 export type SetInput = (action: { nodeId: string; socketId: string; value: any }) => void
@@ -15,7 +20,10 @@ export interface WireEvents {
   handleWireMove: (x: number, y: number) => void
   handleWireEnd: () => void
 }
-interface IStore extends WireEvents {
+export interface EditorInstance {
+  addNode: (node: NodeInitialProps) => void
+}
+interface IStore extends WireEvents, EditorInstance {
   nodes: NodeType[]
   wires: WireType[]
   drawWire: null | {
@@ -55,10 +63,7 @@ interface IStore extends WireEvents {
   deselectAll: () => void
   setBox: (box: null | Box2D) => void
   deleteSelected: () => void
-}
-
-export interface EditorInstance {
-  addNode: (node: NodeInitialProps) => void
+  getNodesAndWires: () => void
 }
 
 //@ts-ignore
@@ -66,9 +71,10 @@ const Context = createContext<IStore>()
 
 type Props = {
   onLoad?: (instance: EditorInstance) => void
+  onUpdate?: (nodes: NodeType[], wires: WireType[]) => void
   [key: string]: any
 }
-export const EditorProvider: FC<Props> = ({ children, nodes, wires, onLoad }) => {
+export const EditorProvider: FC<Props> = ({ children, nodes, wires, onLoad, onUpdate }) => {
   const store = useLocalObservable(
     (): IStore => ({
       nodes,
@@ -285,6 +291,12 @@ export const EditorProvider: FC<Props> = ({ children, nodes, wires, onLoad }) =>
         )
         store.nodes = store.nodes.filter(n => !n.selected)
       },
+      addNode(props) {
+        store.nodes.push(getNodeProps(props))
+      },
+      getNodesAndWires() {
+        return { nodes: toJS(store.nodes), wires: toJS(store.wires) }
+      },
     })
   )
 
@@ -298,11 +310,8 @@ export const EditorProvider: FC<Props> = ({ children, nodes, wires, onLoad }) =>
         store.updateDependancies(node)
       })
     if (onLoad) {
-      onLoad({
-        addNode: props => {
-          store.nodes.push(getNodeProps(props))
-        },
-      })
+      const { addNode } = store
+      onLoad({ addNode })
     }
   }
 
@@ -318,10 +327,18 @@ export const EditorProvider: FC<Props> = ({ children, nodes, wires, onLoad }) =>
           return store.deleteSelected()
       }
     }
-
     document.addEventListener('keydown', keyCombination)
     return () => document.removeEventListener('keydown', keyCombination)
   }, [])
+
+  useEffect(
+    () =>
+      reaction<any>(
+        store.getNodesAndWires,
+        ({ nodes, wires }) => onUpdate && onUpdate(nodes, wires)
+      ),
+    []
+  )
 
   return <Context.Provider value={store}>{children}</Context.Provider>
 }

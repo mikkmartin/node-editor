@@ -14,10 +14,11 @@ type NewNodePos = null | {
 }
 
 export default function Home() {
+  const [json, setJson] = useState(inputs)
   const [newNodePos, setNewNodePos] = useState<NewNodePos>(null)
   const instance = useRef<EditorInstance>()
+
   const handleUpdate = (nodes, wires) => {
-    //console.log({ nodes, wires })
     calculateOutputs(nodes, wires)
     /*
     const outPutNodes = nodes
@@ -27,8 +28,8 @@ export default function Home() {
     //console.log(outPutNodes)
   }
 
-  const handleJsonUpdate = () => {
-    //console.log(args)
+  const handleJsonUpdate = updatedJson => {
+    setJson(updatedJson)
   }
 
   const handleDoubleClick = ev => {
@@ -48,14 +49,14 @@ export default function Home() {
 
   return (
     <Container>
-      <JSONInput onUpdate={handleJsonUpdate} initialInputs={inputs} />
+      <JSONInput onUpdate={handleJsonUpdate} data={json} />
       <NodeEditor
         onLoad={editor => (instance.current = editor)}
         onUpdate={handleUpdate}
         elements={initialElements}
         onDoubleClick={handleDoubleClick}
       />
-      <JSONOutput />
+      <JSONOutput data={json} />
       <DropdownMenu
         open={Boolean(newNodePos)}
         onClose={() => setNewNodePos(null)}
@@ -74,10 +75,10 @@ export default function Home() {
   )
 }
 
-const inputs = { someVal: 20 }
-const inputNodes = Object.entries(inputs).map(([, input], id) => ({
+const inputs = { someVal: 20, someOtherValue: 30 }
+const inputNodes = Object.entries(inputs).map(([name, input]) => ({
   type: 'input',
-  id,
+  id: name,
   inputs: [input],
 }))
 

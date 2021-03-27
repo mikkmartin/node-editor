@@ -2,12 +2,12 @@ import { useEffect, useState, FC } from 'react'
 import styled from 'styled-components'
 
 type Props = {
-  initialInputs?: { [key: string]: any }
+  data?: { [key: string]: any }
   onUpdate?: (json: object) => void
 }
-export const JSONInput: FC<Props> = ({ initialInputs = { someVal: 12 }, onUpdate = () => {} }) => {
-  const [text, setText] = useState(JSON.stringify(initialInputs, null, 2))
-  const [, setJson] = useState(initialInputs)
+export const JSONInput: FC<Props> = ({ data = { someVal: 12 }, onUpdate = () => {} }) => {
+  const [text, setText] = useState(JSON.stringify(data, null, 2))
+  const [, setJson] = useState(data)
   const [error, setError] = useState('')
 
   useEffect(() => {

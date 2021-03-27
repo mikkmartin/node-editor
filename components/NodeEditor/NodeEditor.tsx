@@ -12,10 +12,10 @@ interface INodeEditor {
   onLoad?: (instance: EditorInstance) => void
 }
 
-export const NodeEditor: FC<INodeEditor> = ({ elements, onLoad, ...rest }) => {
+export const NodeEditor: FC<INodeEditor> = ({ elements, onLoad, onUpdate, ...rest }) => {
   return useMemo(
     () => (
-      <EditorProvider {...getInitialElements(elements)} onLoad={onLoad}>
+      <EditorProvider {...getInitialElements(elements)} onLoad={onLoad} onUpdate={onUpdate}>
         <Canvas {...rest} />
       </EditorProvider>
     ),

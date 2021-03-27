@@ -8,16 +8,13 @@ import { DragWire, ConnectedWire } from './Wire'
 import { FilterDefs } from './FilterDefs'
 import { Selector } from './Selector'
 import { observer } from 'mobx-react-lite'
-import { autorun } from 'mobx'
-import { useEffect } from 'react'
 import { AnimatePresence } from 'framer-motion'
 
 type Props = {
-  onUpdate: (nodes: NodeType[], wires: WireType[]) => void
   onClick?: (ev) => void
   onDoubleClick?: (ev) => void
 }
-export const Canvas = observer<Props>(({ onUpdate, onClick, onDoubleClick }) => {
+export const Canvas = observer<Props>(({ onClick, onDoubleClick }) => {
   const {
     handlePan,
     handlePanEnd,
@@ -27,8 +24,6 @@ export const Canvas = observer<Props>(({ onUpdate, onClick, onDoubleClick }) => 
     nodes,
     wires,
   } = useStore()
-
-  useEffect(() => autorun(() => onUpdate(nodes, wires)), [])
 
   return (
     <Container
